@@ -21,4 +21,9 @@ public final class Transition<StateType extends State> {
     }
 
     // TODO: Store userdata
+
+    @Override
+    public String toString() {
+        return source.toString() + " -> " + target.toString();
+    }
 }

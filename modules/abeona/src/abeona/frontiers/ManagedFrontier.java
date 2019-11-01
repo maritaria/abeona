@@ -1,6 +1,7 @@
 package abeona.frontiers;
 
 import abeona.State;
+import abeona.util.Arguments;
 
 import java.util.Optional;
 import java.util.Spliterator;
@@ -19,8 +20,11 @@ public interface ManagedFrontier<StateType extends State> extends Frontier<State
     }
 
     default boolean contains(StateType item) {
-        for (StateType state : this) {
-            if (state.equivalent(state)) return true;
+        Arguments.requireNonNull(item, "state");
+        for (StateType knownState : this) {
+            if (knownState.equals(item)) {
+                return true;
+            }
         }
         return false;
     }
@@ -37,9 +41,10 @@ public interface ManagedFrontier<StateType extends State> extends Frontier<State
 
     @Override
     default boolean add(Stream<? extends StateType> generator) {
-        //noinspection SimplifyStreamApiCallChains
-        return generator.map(this::add)
-                .anyMatch(Boolean::booleanValue);
+        Arguments.requireNonNull(generator, "generator");
+        return generator
+                .map(this::add)
+                .reduce(false, (a, b) -> a || b);
     }
 
     default Stream<StateType> stream() {

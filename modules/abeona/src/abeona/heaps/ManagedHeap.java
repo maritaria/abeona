@@ -30,7 +30,7 @@ public interface ManagedHeap<StateType extends State> extends Heap<StateType>, I
     default boolean contains(StateType state) {
         Arguments.requireNonNull(state, "state");
         for (StateType knownState : this) {
-            if (knownState.equivalent(state)) {
+            if (knownState.equals(state)) {
                 return true;
             }
         }

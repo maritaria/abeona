@@ -5,6 +5,7 @@ import abeona.aspects.BiFunctionTap;
 import abeona.aspects.FunctionTap;
 import abeona.behaviours.ExplorationBehaviour;
 import abeona.frontiers.Frontier;
+import abeona.frontiers.ManagedFrontier;
 import abeona.heaps.Heap;
 import abeona.util.Arguments;
 
@@ -12,11 +13,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public final class ExplorationQuery<StateType extends State> {
     private final Frontier<StateType> frontier;
     private final Heap<StateType> heap;
+    private final Predicate<StateType> isKnown;
     private final Function<StateType, Stream<Transition<StateType>>> outgoingTransitionGenerator;
     private final WeakHashMap<StateType, StateType> stateIdentities = new WeakHashMap<>();
 
@@ -35,6 +38,7 @@ public final class ExplorationQuery<StateType extends State> {
     ) {
         this.frontier = frontier;
         this.heap = heap;
+        this.isKnown = ExplorationQuery.defaultIsKnownPredicate(frontier, heap);
         this.outgoingTransitionGenerator = outgoingTransitionGenerator;
     }
 
@@ -101,7 +105,7 @@ public final class ExplorationQuery<StateType extends State> {
     private TransitionEvaluationEvent<StateType> createTransitionEvaluationEvent(Transition<StateType> transition) {
         Arguments.requireNonNull(transition, "transition");
         final var event = new TransitionEvaluationEvent<>(this, transition);
-        event.filterTargetState(heap::contains);
+        event.filterTargetState(Predicate.not(isKnown));
         return event;
     }
 
@@ -150,5 +154,16 @@ public final class ExplorationQuery<StateType extends State> {
         }
         // TODO: Documentation
         // TODO: Unit tests
+    }
+
+    private static <StateType extends State> Predicate<StateType> defaultIsKnownPredicate(Frontier<StateType> frontier, Heap<StateType> heap) {
+        final Predicate<StateType> inHeap = heap::contains;
+        if (frontier instanceof ManagedFrontier) {
+            final ManagedFrontier<StateType> managedFrontier = (ManagedFrontier<StateType>) frontier;
+            final Predicate<StateType> inFrontier = managedFrontier::contains;
+            return inFrontier.or(inHeap);
+        } else {
+            return inHeap;
+        }
     }
 }

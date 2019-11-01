@@ -4,8 +4,7 @@ import abeona.*;
 import abeona.aspects.EventTap;
 import abeona.util.Arguments;
 
-import java.util.OptionalDouble;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.function.ToDoubleFunction;
 
 public class TraceCostBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
@@ -28,8 +27,7 @@ public class TraceCostBehaviour<StateType extends State> extends AbstractBehavio
         final double transitionCost = transitionCosts.applyAsDouble(transition);
         final var source = transition.getSourceState();
         final var target = transition.getTargetState();
-
-        double currentCost = getTraceCost(source).orElse(0) + transitionCost;
+        final double currentCost = getTraceCost(source).orElse(0) + transitionCost;
         getTraceCost(target).ifPresentOrElse(existingCost -> {
             if (currentCost < existingCost) {
                 setTraceCost(target, currentCost);
@@ -38,11 +36,13 @@ public class TraceCostBehaviour<StateType extends State> extends AbstractBehavio
         }, () -> setTraceCost(target, currentCost));
     }
 
-    private final WeakHashMap<StateType, Double> costMetadata = new WeakHashMap<>();
+    private final Map<StateType, Double> costMetadata = new WeakHashMap<>();
 
     public OptionalDouble getTraceCost(StateType state) {
         Arguments.requireNonNull(state, "state");
-        return costMetadata.containsKey(state) ? OptionalDouble.of(costMetadata.get(state)) : OptionalDouble.empty();
+        final var cost = costMetadata.get(state);
+        return cost == null ? OptionalDouble.empty() : OptionalDouble.of(cost);
+        // return costMetadata.containsKey(state) ? OptionalDouble.of(costMetadata.get(state)) : OptionalDouble.empty();
     }
 
     public void setTraceCost(StateType state, double cost) {

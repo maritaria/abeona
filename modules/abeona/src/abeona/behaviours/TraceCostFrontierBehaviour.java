@@ -24,7 +24,9 @@ public class TraceCostFrontierBehaviour<StateType extends State> extends TraceCo
     @Override
     public void setTraceCost(StateType state, double cost) {
         final var iterator = this.registeredQueries().iterator();
-        mutateFrontiers(state, iterator, unused -> super.setTraceCost(state, cost));
+        if (super.getTraceCost(state).orElse(0) != cost) {
+            mutateFrontiers(state, iterator, unused -> super.setTraceCost(state, cost));
+        }
     }
 
     private void mutateFrontiers(StateType state, Iterator<ExplorationQuery<StateType>> queries, Consumer<StateType> proceed) {

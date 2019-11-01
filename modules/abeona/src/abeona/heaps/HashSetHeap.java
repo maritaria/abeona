@@ -12,8 +12,9 @@ import java.util.function.BiPredicate;
 import java.util.function.ToIntFunction;
 
 public class HashSetHeap<StateType extends State> implements ManagedHeap<StateType> {
+    // TODO: Create two implementations, one with a wrapper and one without
     private final Set<StateHolder> states = new HashSet<>();
-    private final BiPredicate<StateType, StateType> equivalence = State::equivalent;
+    private final BiPredicate<StateType, StateType> equivalence = Objects::equals;
     private final ToIntFunction<StateType> hasher = Objects::hashCode;
 
     @Override
@@ -59,10 +60,11 @@ public class HashSetHeap<StateType extends State> implements ManagedHeap<StateTy
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof State) {
-                assert state.getClass().isAssignableFrom(obj.getClass()) : "incompatible state types";
-                @SuppressWarnings("unchecked") final var other = (StateType) obj;
-                return HashSetHeap.this.equivalence.test(state, other);
+            if (obj instanceof HashSetHeap.StateHolder) {
+                final var other = (HashSetHeap.StateHolder) obj;
+                // assert state.getClass().isAssignableFrom(other.state.getClass()) : "incompatible state types";
+                @SuppressWarnings("unchecked") final var otherState = (StateType) other.state;
+                return HashSetHeap.this.equivalence.test(state, otherState);
             } else {
                 return false;
             }
