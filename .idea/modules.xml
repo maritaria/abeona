@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/modules/abeona/abeona.iml" filepath="$PROJECT_DIR$/modules/abeona/abeona.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.maze/abeona.demos.maze.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.maze/abeona.demos.maze.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.network/abeona.demos.network.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.network/abeona.demos.network.iml" />
     </modules>
   </component>
 </project>
