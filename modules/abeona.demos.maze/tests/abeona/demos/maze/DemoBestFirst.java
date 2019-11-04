@@ -4,6 +4,8 @@ import abeona.ExplorationQuery;
 import abeona.behaviours.TraceCostFrontierBehaviour;
 import abeona.frontiers.TreeMapFrontier;
 import abeona.heaps.HashSetHeap;
+import abeona.metadata.LookupMetadataStore;
+import abeona.metadata.OnStateMetadataStore;
 
 import java.util.Comparator;
 import java.util.function.ToDoubleFunction;
