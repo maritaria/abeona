@@ -1,3 +1,6 @@
+package abeona.demos.network;
+
+import abeona.demos.network.Network;
 import abeona.util.ExplorationPresets;
 import org.junit.jupiter.api.Test;
 

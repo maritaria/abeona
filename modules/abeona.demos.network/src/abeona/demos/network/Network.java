@@ -1,3 +1,5 @@
+package abeona.demos.network;
+
 import abeona.State;
 import abeona.Transition;
 import abeona.util.Arguments;
