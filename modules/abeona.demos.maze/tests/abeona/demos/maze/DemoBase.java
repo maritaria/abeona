@@ -2,6 +2,7 @@ package abeona.demos.maze;
 
 import abeona.ExplorationQuery;
 import abeona.behaviours.BacktraceBehaviour;
+import abeona.behaviours.IsKnownOptimization;
 import abeona.behaviours.TerminateOnGoalStateBehaviour;
 import abeona.util.MappingIterator;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Random;
 
 abstract class DemoBase {
+    public static boolean OPTIMIZE = false;
     private static final int SEED = 1;
     private static final int WIDTH = 200;
     private static final int HEIGHT = 200;
@@ -80,6 +82,9 @@ abstract class DemoBase {
         final var query = prepareQuery(maze);
         final var termination = new TerminateOnGoalStateBehaviour<>(this::isGoal);
         termination.attach(query);
+        if (OPTIMIZE) {
+            new IsKnownOptimization<PlayerState>().attach(query);
+        }
         final long start = System.currentTimeMillis();
         query.explore();
         final long end = System.currentTimeMillis();

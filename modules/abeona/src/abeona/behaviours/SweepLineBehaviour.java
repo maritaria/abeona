@@ -3,6 +3,7 @@ package abeona.behaviours;
 import abeona.ExplorationQuery;
 import abeona.State;
 import abeona.StateEvent;
+import abeona.aspects.EventTap;
 import abeona.heaps.ManagedHeap;
 import abeona.util.Arguments;
 
@@ -11,6 +12,7 @@ import java.util.function.Consumer;
 
 public final class SweepLineBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
     private final Comparator<StateType> progressComparator;
+    public final EventTap<StateEvent<StateType>> onPurge = new EventTap<>();
 
     public SweepLineBehaviour(Comparator<StateType> progressComparator) {
         Arguments.requireNonNull(progressComparator, "progressComparator");
@@ -41,6 +43,7 @@ public final class SweepLineBehaviour<StateType extends State> extends AbstractB
                 final var state = iterator.next();
                 if (progressComparator.compare(state, threshold) < 0) {
                     iterator.remove();
+                    onPurge.accept(event);
                 }
             }
         }

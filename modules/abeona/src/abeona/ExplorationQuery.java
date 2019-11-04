@@ -7,11 +7,14 @@ import abeona.behaviours.ExplorationBehaviour;
 import abeona.frontiers.Frontier;
 import abeona.frontiers.ManagedFrontier;
 import abeona.heaps.Heap;
+import abeona.metadata.LookupMetadataStore;
+import abeona.metadata.MetadataStore;
 import abeona.util.Arguments;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -19,9 +22,10 @@ import java.util.stream.Stream;
 public final class ExplorationQuery<StateType extends State> {
     private final Frontier<StateType> frontier;
     private final Heap<StateType> heap;
-    private final Predicate<StateType> isKnown;
+    private final BiFunction<ExplorationQuery<StateType>, StateType, Boolean> isKnownDefault;
     private final Function<StateType, Stream<Transition<StateType>>> outgoingTransitionGenerator;
     private final WeakHashMap<StateType, StateType> stateIdentities = new WeakHashMap<>();
+    private final MetadataStore<StateType> metadata;
 
     public Frontier<StateType> getFrontier() {
         return frontier;
@@ -31,15 +35,35 @@ public final class ExplorationQuery<StateType extends State> {
         return heap;
     }
 
+    public MetadataStore<StateType> getMetadata() {
+        return metadata;
+    }
+
     public ExplorationQuery(
             Frontier<StateType> frontier,
             Heap<StateType> heap,
             Function<StateType, Stream<Transition<StateType>>> outgoingTransitionGenerator
     ) {
+        this(frontier, heap, outgoingTransitionGenerator, new LookupMetadataStore<>());
+    }
+
+    public ExplorationQuery(
+            Frontier<StateType> frontier,
+            Heap<StateType> heap,
+            Function<StateType, Stream<Transition<StateType>>> outgoingTransitionGenerator,
+            MetadataStore<StateType> metadata
+    ) {
+        Arguments.requireNonNull(frontier, "frontier");
+        Arguments.requireNonNull(heap, "heap");
+        Arguments.requireNonNull(outgoingTransitionGenerator, "outgoingTransitionGenerator");
+        Arguments.requireNonNull(metadata, "metadata");
         this.frontier = frontier;
         this.heap = heap;
-        this.isKnown = ExplorationQuery.defaultIsKnownPredicate(frontier, heap);
+        final var q = ExplorationQuery.defaultIsKnownPredicate(frontier, heap);
+        this.isKnownDefault = (query, state) -> q.test(state);
+        this.isKnown = new BiFunctionTap<>(this.isKnownDefault);
         this.outgoingTransitionGenerator = outgoingTransitionGenerator;
+        this.metadata = metadata;
     }
 
     public final EventTap<ExplorationEvent<StateType>> beforeExploration = new EventTap<>();
@@ -53,6 +77,7 @@ public final class ExplorationQuery<StateType extends State> {
 
     public final BiFunctionTap<Frontier<StateType>, Stream<StateType>, Boolean> insertIntoFrontier = new BiFunctionTap<>(Frontier::add);
     public final FunctionTap<ExplorationQuery<StateType>, StateType> pickNextState = new FunctionTap<>(ExplorationQuery::pickNextStateInternal);
+    public final BiFunctionTap<ExplorationQuery<StateType>, StateType, Boolean> isKnown;
 
     public TerminationType explore() {
         try {
@@ -105,7 +130,7 @@ public final class ExplorationQuery<StateType extends State> {
     private TransitionEvaluationEvent<StateType> createTransitionEvaluationEvent(Transition<StateType> transition) {
         Arguments.requireNonNull(transition, "transition");
         final var event = new TransitionEvaluationEvent<>(this, transition);
-        event.filterTargetState(Predicate.not(isKnown));
+        event.filterTargetState(state -> !this.isKnown.apply(this, state));
         return event;
     }
 

@@ -16,5 +16,10 @@ class DemoPerformance {
         for (DemoBase demo : demos) {
             demo.measureRuntimePerformance();
         }
+        DemoBase.OPTIMIZE = true;
+        System.out.println("Now with optimizations:");
+        for (DemoBase demo : demos) {
+            demo.measureRuntimePerformance();
+        }
     }
 }

@@ -50,7 +50,7 @@ public final class ExplorationPresets {
 
     public static <StateType extends State> ExplorationQuery<StateType> setupAStar(Function<StateType, Stream<Transition<StateType>>> neighbours, ToDoubleFunction<Transition<StateType>> costs, ToDoubleFunction<StateType> remainingCostHeuristic) {
         final var traceCost = new TraceCostFrontierBehaviour<>(costs);
-        final var comparator = Comparator.<StateType>comparingDouble(state -> traceCost.getTraceCost(state).orElseThrow() + remainingCostHeuristic.applyAsDouble(state));
+        final var comparator = Comparator.<StateType>comparingDouble(state -> traceCost.getTraceCost(state).orElse(0) + remainingCostHeuristic.applyAsDouble(state));
         final var frontier = TreeMapFrontier.withCollisions(comparator, Objects::hashCode);
         final var query = new ExplorationQuery<>(frontier, new HashSetHeap<>(), neighbours);
         query.addBehaviour(traceCost);
