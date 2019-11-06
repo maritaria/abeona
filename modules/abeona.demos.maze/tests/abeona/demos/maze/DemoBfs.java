@@ -1,6 +1,6 @@
 package abeona.demos.maze;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.frontiers.QueueFrontier;
 import abeona.heaps.HashSetHeap;
 
@@ -13,8 +13,8 @@ class DemoBfs extends DemoBase {
     }
 
     @Override
-    ExplorationQuery<PlayerState> prepareQuery(Maze maze, Position start, Position end) {
-        final var query = new ExplorationQuery<>(
+    Query<PlayerState> prepareQuery(Maze maze, Position start, Position end) {
+        final var query = new Query<>(
                 QueueFrontier.fifoFrontier(),
                 new HashSetHeap<>(),
                 PlayerState::next

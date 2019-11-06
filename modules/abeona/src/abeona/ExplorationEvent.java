@@ -3,15 +3,15 @@ package abeona;
 import abeona.util.Arguments;
 
 public class ExplorationEvent<StateType extends State> {
-    private final ExplorationQuery<StateType> explorationQuery;
+    private final Query<StateType> query;
 
-    public ExplorationQuery<StateType> getQuery() {
-        return explorationQuery;
+    public Query<StateType> getQuery() {
+        return query;
     }
 
-    public ExplorationEvent(ExplorationQuery<StateType> explorationQuery) {
-        Arguments.requireNonNull(explorationQuery, "explorationQuery");
-        this.explorationQuery = explorationQuery;
+    public ExplorationEvent(Query<StateType> query) {
+        Arguments.requireNonNull(query, "query");
+        this.query = query;
     }
 
     public void abortExploration() {

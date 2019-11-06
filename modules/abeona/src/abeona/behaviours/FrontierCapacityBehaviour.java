@@ -1,6 +1,6 @@
 package abeona.behaviours;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.State;
 import abeona.frontiers.Frontier;
 import abeona.frontiers.GeneratorFrontier;
@@ -20,11 +20,11 @@ public class FrontierCapacityBehaviour<StateType extends State> extends Abstract
     }
 
     @Override
-    public void attach(ExplorationQuery<StateType> explorationQuery) {
-        Arguments.requireNonNull(explorationQuery, "explorationQuery");
-        Arguments.requireInstanceOf(explorationQuery.getFrontier(), ManagedFrontier.class, "explorationQuery.frontier");
-        Arguments.preventInstanceOf(explorationQuery.getFrontier(), GeneratorFrontier.class, "explorationQuery.frontier");
-        tapQueryBehaviour(explorationQuery, explorationQuery.insertIntoFrontier, this::onFrontierInsert);
+    public void attach(Query<StateType> query) {
+        Arguments.requireNonNull(query, "query");
+        Arguments.requireInstanceOf(query.getFrontier(), ManagedFrontier.class, "query.frontier");
+        Arguments.preventInstanceOf(query.getFrontier(), GeneratorFrontier.class, "query.frontier");
+        tapQueryBehaviour(query, query.insertIntoFrontier, this::onFrontierInsert);
     }
 
     private boolean onFrontierInsert(Frontier<StateType> frontier, Stream<StateType> states, BiFunction<Frontier<StateType>, Stream<StateType>, Boolean> next) {

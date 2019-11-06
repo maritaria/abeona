@@ -11,22 +11,22 @@ import java.util.function.Consumer;
 public final class IsKnownOptimization<StateType extends State> extends AbstractBehaviour<StateType> {
     private static final Object IS_KNOWN_FLAG = new Object();
 
-    public void setMark(ExplorationQuery<StateType> query, StateType state, boolean isKnown) {
+    public void setMark(Query<StateType> query, StateType state, boolean isKnown) {
         query.getMetadata().set(state, this, isKnown ? IS_KNOWN_FLAG : null);
     }
 
-    public boolean getMark(ExplorationQuery<StateType> query, StateType state) {
+    public boolean getMark(Query<StateType> query, StateType state) {
         return query.getMetadata().get(state, this).isPresent();
     }
 
     @Override
-    public void attach(ExplorationQuery<StateType> query) {
+    public void attach(Query<StateType> query) {
         this.tapQueryBehaviour(query, query.beforeExploration, this::beforeExploration);
         this.tapQueryBehaviour(query, query.isKnown, this::interceptIsKnown);
         this.tapQueryBehaviour(query, query.onStateDiscovery, this::onDiscovery);
     }
 
-    public void attach(ExplorationQuery<StateType> query, SweepLineBehaviour<StateType> sweepLine) {
+    public void attach(Query<StateType> query, SweepLineBehaviour<StateType> sweepLine) {
         Arguments.requireNonNull(query, "query");
         Arguments.requireNonNull(sweepLine, "sweepLine");
         this.attach(query);
@@ -50,7 +50,7 @@ public final class IsKnownOptimization<StateType extends State> extends Abstract
         }
     }
 
-    private boolean interceptIsKnown(ExplorationQuery<StateType> query, StateType state, BiFunction<ExplorationQuery<StateType>, StateType, Boolean> next) {
+    private boolean interceptIsKnown(Query<StateType> query, StateType state, BiFunction<Query<StateType>, StateType, Boolean> next) {
         return getMark(query, state);
     }
 

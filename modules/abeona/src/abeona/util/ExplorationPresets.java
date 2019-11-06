@@ -1,6 +1,6 @@
 package abeona.util;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.NextFunction;
 import abeona.State;
 import abeona.Transition;
@@ -17,11 +17,11 @@ import java.util.Objects;
 import java.util.function.ToDoubleFunction;
 
 public final class ExplorationPresets {
-    public static <StateType extends State> ExplorationQuery<StateType> setupBfs(NextFunction<StateType> neighbours) {
-        return new ExplorationQuery<>(QueueFrontier.fifoFrontier(), new HashSetHeap<>(), neighbours);
+    public static <StateType extends State> Query<StateType> setupBfs(NextFunction<StateType> neighbours) {
+        return new Query<>(QueueFrontier.fifoFrontier(), new HashSetHeap<>(), neighbours);
     }
 
-    public static <StateType extends State> ExplorationQuery<StateType> setupBfsMaxDepth(
+    public static <StateType extends State> Query<StateType> setupBfsMaxDepth(
             NextFunction<StateType> neighbours,
             int maxDepth
     ) {
@@ -33,11 +33,11 @@ public final class ExplorationPresets {
         return query;
     }
 
-    public static <StateType extends State> ExplorationQuery<StateType> setupDfs(NextFunction<StateType> neighbours) {
-        return new ExplorationQuery<>(QueueFrontier.lifoFrontier(), new HashSetHeap<>(), neighbours);
+    public static <StateType extends State> Query<StateType> setupDfs(NextFunction<StateType> neighbours) {
+        return new Query<>(QueueFrontier.lifoFrontier(), new HashSetHeap<>(), neighbours);
     }
 
-    public static <StateType extends State> ExplorationQuery<StateType> setupDfsMaxDepth(
+    public static <StateType extends State> Query<StateType> setupDfsMaxDepth(
             NextFunction<StateType> neighbours,
             int maxDepth
     ) {
@@ -49,14 +49,14 @@ public final class ExplorationPresets {
         return query;
     }
 
-    public static <StateType extends State> ExplorationQuery<StateType> setupDijkstra(
+    public static <StateType extends State> Query<StateType> setupDijkstra(
             NextFunction<StateType> neighbours,
             ToDoubleFunction<Transition<StateType>> costs
     ) {
         return setupAStar(neighbours, costs, s -> 0);
     }
 
-    public static <StateType extends State> ExplorationQuery<StateType> setupAStar(
+    public static <StateType extends State> Query<StateType> setupAStar(
             NextFunction<StateType> neighbours,
             ToDoubleFunction<Transition<StateType>> costs,
             ToDoubleFunction<StateType> remainingCostHeuristic
@@ -65,18 +65,18 @@ public final class ExplorationPresets {
         final var comparator = Comparator.<StateType>comparingDouble(state -> traceCost.getTraceCost(state)
                 .orElse(0) + remainingCostHeuristic.applyAsDouble(state));
         final var frontier = TreeMapFrontier.withCollisions(comparator, Objects::hashCode);
-        final var query = new ExplorationQuery<>(frontier, new HashSetHeap<>(), neighbours);
+        final var query = new Query<>(frontier, new HashSetHeap<>(), neighbours);
         query.addBehaviour(traceCost);
         return query;
     }
 
-    public static <StateType extends State> ExplorationQuery<StateType> setupSweepLine(
+    public static <StateType extends State> Query<StateType> setupSweepLine(
             NextFunction<StateType> neighbours,
             Comparator<StateType> progressMeasure
     ) {
         final var frontier = TreeMapFrontier.withCollisions(progressMeasure, Objects::hashCode);
         final var heap = new HashSetHeap<StateType>();
-        final var query = new ExplorationQuery<>(frontier, heap, neighbours);
+        final var query = new Query<>(frontier, heap, neighbours);
         final var sweepLine = new SweepLineBehaviour<>(progressMeasure);
         query.addBehaviour(sweepLine);
         return query;

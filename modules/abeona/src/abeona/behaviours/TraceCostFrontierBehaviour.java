@@ -1,7 +1,7 @@
 package abeona.behaviours;
 
 import abeona.frontiers.DynamicallyOrderedFrontier;
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.State;
 import abeona.Transition;
 import abeona.util.Arguments;
@@ -16,9 +16,9 @@ public class TraceCostFrontierBehaviour<StateType extends State> extends TraceCo
     }
 
     @Override
-    public void attach(ExplorationQuery<StateType> explorationQuery) {
-        Arguments.requireInstanceOf(explorationQuery.getFrontier(), DynamicallyOrderedFrontier.class, "exlorationQuery.getFrontier()");
-        super.attach(explorationQuery);
+    public void attach(Query<StateType> query) {
+        Arguments.requireInstanceOf(query.getFrontier(), DynamicallyOrderedFrontier.class, "exlorationQuery.getFrontier()");
+        super.attach(query);
     }
 
     @Override
@@ -29,13 +29,13 @@ public class TraceCostFrontierBehaviour<StateType extends State> extends TraceCo
         }
     }
 
-    private void mutateFrontiers(StateType state, Iterator<ExplorationQuery<StateType>> queries, Consumer<StateType> proceed) {
+    private void mutateFrontiers(StateType state, Iterator<Query<StateType>> queries, Consumer<StateType> proceed) {
         // This method calls mutateOrderedProperty on all registered frontiers to update the mutable property
         // The iterator is passed to recursive invokations of this method such that the callback given to mutateOrderedProperty can block until all frontiers are ready for the mutation.
         // When the iterator has reached its end then the real mutation (the proceed argument) is invoked once after which the recursion ends and is resolved all the way down.
         if (queries.hasNext()) {
-            final var explorationQuery = queries.next();
-            final var frontier = (DynamicallyOrderedFrontier<StateType>) explorationQuery.getFrontier();
+            final var query = queries.next();
+            final var frontier = (DynamicallyOrderedFrontier<StateType>) query.getFrontier();
             frontier.mutateOrderedProperty(state, s -> mutateFrontiers(s, queries, proceed));
         } else {
             proceed.accept(state);

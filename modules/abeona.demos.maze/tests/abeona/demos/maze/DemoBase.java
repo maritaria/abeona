@@ -1,6 +1,6 @@
 package abeona.demos.maze;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.behaviours.BacktraceBehaviour;
 import abeona.behaviours.IsKnownOptimization;
 import abeona.behaviours.TerminateOnGoalStateBehaviour;
@@ -23,7 +23,7 @@ abstract class DemoBase {
         return new MazeGenerator(new Random(SEED)).createMazeSubdiv(WIDTH, HEIGHT);
     }
 
-    private ExplorationQuery<PlayerState> prepareQuery(Maze maze) {
+    private Query<PlayerState> prepareQuery(Maze maze) {
         return prepareQuery(maze, new Position(START_X, START_Y), new Position(END_X, END_Y));
     }
 
@@ -36,7 +36,7 @@ abstract class DemoBase {
 
     abstract String algorithmName();
 
-    abstract ExplorationQuery<PlayerState> prepareQuery(Maze maze, Position start, Position end);
+    abstract Query<PlayerState> prepareQuery(Maze maze, Position start, Position end);
 
     String renderExplorationOutputPath() {
         return "maze-demo." + algorithmName() + ".png";

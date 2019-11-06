@@ -1,6 +1,6 @@
 package abeona.behaviours;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.State;
 import abeona.TransitionEvaluationEvent;
 import abeona.aspects.EventTap;
@@ -20,9 +20,9 @@ public final class TerminateOnGoalStateBehaviour<StateType extends State> extend
     }
 
     @Override
-    public void attach(ExplorationQuery<StateType> explorationQuery) {
-        Arguments.requireNonNull(explorationQuery, "explorationQuery");
-        tapQueryBehaviour(explorationQuery, explorationQuery.onStateDiscovery, this::onDiscovery);
+    public void attach(Query<StateType> query) {
+        Arguments.requireNonNull(query, "query");
+        tapQueryBehaviour(query, query.onStateDiscovery, this::onDiscovery);
     }
 
     private void onDiscovery(TransitionEvaluationEvent<StateType> event) {
@@ -33,7 +33,7 @@ public final class TerminateOnGoalStateBehaviour<StateType extends State> extend
         }
     }
 
-    public Optional<StateType> wrapExploration(ExplorationQuery<StateType> query) {
+    public Optional<StateType> wrapExploration(Query<StateType> query) {
         if (!this.hasRegisteredTo(query)) {
             throw new IllegalArgumentException("The behaviour is not registered for that query");
         }

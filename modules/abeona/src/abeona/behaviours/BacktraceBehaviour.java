@@ -1,6 +1,6 @@
 package abeona.behaviours;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.State;
 import abeona.Transition;
 import abeona.TransitionEvaluationEvent;
@@ -13,15 +13,15 @@ public class BacktraceBehaviour<StateType extends State> extends AbstractBehavio
     private int mutationCounter = 0;
 
     @Override
-    public void attach(ExplorationQuery<StateType> explorationQuery) {
-        Arguments.requireNonNull(explorationQuery, "explorationQuery");
-        tapQueryBehaviour(explorationQuery, explorationQuery.onStateDiscovery, this::onStateDiscovered);
+    public void attach(Query<StateType> query) {
+        Arguments.requireNonNull(query, "explorationQuery");
+        tapQueryBehaviour(query, query.onStateDiscovery, this::onStateDiscovered);
     }
 
-    public void attach(ExplorationQuery<StateType> explorationQuery, TraceCostBehaviour<StateType> traceCostBehaviour) {
-        Arguments.requireNonNull(explorationQuery, "explorationQuery");
+    public void attach(Query<StateType> query, TraceCostBehaviour<StateType> traceCostBehaviour) {
+        Arguments.requireNonNull(query, "explorationQuery");
         Arguments.requireNonNull(traceCostBehaviour, "traceCostBehaviour");
-        attach(explorationQuery);
+        attach(query);
         tapForeignBehaviour(traceCostBehaviour.onLowerPathFound, this::onStateDiscovered);
     }
 

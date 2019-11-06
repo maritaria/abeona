@@ -1,6 +1,6 @@
 package abeona.demos.staircase;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.StateEvaluationEvent;
 import abeona.Transition;
 import abeona.TransitionEvaluationEvent;
@@ -18,7 +18,7 @@ class StaircaseTest {
     @Test
     void solveWithBfs() {
         final var staircase = new Staircase(10, 1, 2, 3);
-        final var query = new ExplorationQuery<StateWrapper<Integer>>(QueueFrontier.fifoFrontier(),
+        final var query = new Query<StateWrapper<Integer>>(QueueFrontier.fifoFrontier(),
                 new HashSetHeap<>(),
                 state -> staircase.next(state.unwrap())
                         .map(StateWrapper::new)
@@ -32,7 +32,7 @@ class StaircaseTest {
     void solveWithSortedFrontier() {
         final var staircase = new Staircase(10, 1, 4);
         final var comp = Comparator.<StateWrapper<Integer>>comparingInt(StateWrapper::unwrap).reversed();
-        final var query = new ExplorationQuery<>(TreeMapFrontier.withExactOrdering(comp),
+        final var query = new Query<>(TreeMapFrontier.withExactOrdering(comp),
                 new HashSetHeap<>(),
                 state -> staircase.next(state.unwrap())
                         .map(StateWrapper::new)

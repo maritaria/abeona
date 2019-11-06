@@ -1,6 +1,6 @@
 package abeona.demos.salesman.gui;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.NextFunction;
 import abeona.behaviours.SimulatedAnnealingBehaviour;
 import abeona.demos.salesman.City;
@@ -20,14 +20,14 @@ import java.util.stream.Stream;
 public class Simulator extends JFrame {
     private final PathView pathView = new PathView();
     private SalesmanPath origin;
-    private final ExplorationQuery<SalesmanPath> query;
+    private final Query<SalesmanPath> query;
     private final ExplorationRunner<SalesmanPath> runner;
     private final SimulatedAnnealingBehaviour<SalesmanPath> annealing;
 
 
     public Simulator() {
         // Init query
-        query = new ExplorationQuery<>(QueueFrontier.fifoFrontier(),
+        query = new Query<>(QueueFrontier.fifoFrontier(),
                 new NullHeap<>(),
                 NextFunction.wrap(SalesmanPath::nextAnnealing));
         annealing = new SimulatedAnnealingBehaviour<>(100,

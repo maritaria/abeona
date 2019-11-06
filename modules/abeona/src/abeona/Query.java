@@ -19,10 +19,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public final class ExplorationQuery<StateType extends State> {
+public final class Query<StateType extends State> {
     private final Frontier<StateType> frontier;
     private final Heap<StateType> heap;
-    private final BiFunction<ExplorationQuery<StateType>, StateType, Boolean> isKnownDefault;
+    private final BiFunction<Query<StateType>, StateType, Boolean> isKnownDefault;
     private final NextFunction<StateType> nextFunction;
     private final WeakHashMap<StateType, StateType> stateIdentities = new WeakHashMap<>();
     private final MetadataStore<StateType> metadata;
@@ -39,7 +39,7 @@ public final class ExplorationQuery<StateType extends State> {
         return metadata;
     }
 
-    public ExplorationQuery(
+    public Query(
             Frontier<StateType> frontier,
             Heap<StateType> heap,
             NextFunction<StateType> nextFunction
@@ -47,7 +47,7 @@ public final class ExplorationQuery<StateType extends State> {
         this(frontier, heap, nextFunction, new LookupMetadataStore<>());
     }
 
-    public ExplorationQuery(
+    public Query(
             Frontier<StateType> frontier,
             Heap<StateType> heap,
             NextFunction<StateType> nextFunction,
@@ -59,7 +59,7 @@ public final class ExplorationQuery<StateType extends State> {
         Arguments.requireNonNull(metadata, "metadata");
         this.frontier = frontier;
         this.heap = heap;
-        final var q = ExplorationQuery.defaultIsKnownPredicate(frontier, heap);
+        final var q = Query.defaultIsKnownPredicate(frontier, heap);
         this.isKnownDefault = (query, state) -> q.test(state);
         this.isKnown = new BiFunctionTap<>(this.isKnownDefault);
         this.nextFunction = nextFunction;
@@ -76,8 +76,8 @@ public final class ExplorationQuery<StateType extends State> {
     public final EventTap<ExplorationTerminationEvent<StateType>> afterExploration = new EventTap<>();
 
     public final BiFunctionTap<Frontier<StateType>, Stream<StateType>, Boolean> insertIntoFrontier = new BiFunctionTap<>(Frontier::add);
-    public final FunctionTap<ExplorationQuery<StateType>, StateType> pickNextState = new FunctionTap<>(ExplorationQuery::pickNextStateInternal);
-    public final BiFunctionTap<ExplorationQuery<StateType>, StateType, Boolean> isKnown;
+    public final FunctionTap<Query<StateType>, StateType> pickNextState = new FunctionTap<>(Query::pickNextStateInternal);
+    public final BiFunctionTap<Query<StateType>, StateType, Boolean> isKnown;
 
     public TerminationType explore() {
         try {

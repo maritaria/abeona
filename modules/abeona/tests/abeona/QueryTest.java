@@ -3,13 +3,12 @@ package abeona;
 import abeona.frontiers.QueueFrontier;
 import abeona.heaps.HashSetHeap;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestTemplate;
 
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ExplorationQueryTest {
+class QueryTest {
     private static final class MyState implements State {
         private final int hash;
 
@@ -84,7 +83,7 @@ class ExplorationQueryTest {
 
     @Test
     void internState() {
-        final var query = new ExplorationQuery<MyState>(
+        final var query = new Query<MyState>(
                 QueueFrontier.<MyState>fifoFrontier(),
                 new HashSetHeap<>(),
                 state -> state.next().map(next -> new Transition<>(state, next))

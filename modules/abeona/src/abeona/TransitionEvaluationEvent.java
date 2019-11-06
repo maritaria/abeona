@@ -26,8 +26,8 @@ public final class TransitionEvaluationEvent<StateType extends State> extends Ex
         return transition;
     }
 
-    public TransitionEvaluationEvent(ExplorationQuery<StateType> explorationQuery, Transition<StateType> transition) {
-        super(explorationQuery);
+    public TransitionEvaluationEvent(Query<StateType> query, Transition<StateType> transition) {
+        super(query);
         Arguments.requireNonNull(transition, "transition");
         this.transition = transition;
     }

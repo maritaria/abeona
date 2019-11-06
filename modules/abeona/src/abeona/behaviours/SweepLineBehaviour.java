@@ -1,6 +1,6 @@
 package abeona.behaviours;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.State;
 import abeona.StateEvent;
 import abeona.aspects.EventTap;
@@ -20,11 +20,11 @@ public final class SweepLineBehaviour<StateType extends State> extends AbstractB
     }
 
     @Override
-    public void attach(ExplorationQuery<StateType> explorationQuery) {
-        Arguments.requireNonNull(explorationQuery, "explorationQuery");
-        Arguments.requireInstanceOf(explorationQuery.getHeap(), ManagedHeap.class, "explorationQuery.heap");
-        final var heap = (ManagedHeap<StateType>) explorationQuery.getHeap();
-        tapQueryBehaviour(explorationQuery, explorationQuery.afterStatePicked, new HeapPurger(heap));
+    public void attach(Query<StateType> query) {
+        Arguments.requireNonNull(query, "query");
+        Arguments.requireInstanceOf(query.getHeap(), ManagedHeap.class, "query.heap");
+        final var heap = (ManagedHeap<StateType>) query.getHeap();
+        tapQueryBehaviour(query, query.afterStatePicked, new HeapPurger(heap));
     }
 
     private class HeapPurger implements Consumer<StateEvent<StateType>> {

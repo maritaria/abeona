@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 public final class LogEventsBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
     @Override
-    public void attach(ExplorationQuery<StateType> query) {
+    public void attach(Query<StateType> query) {
         // TODO: Fix the need of exact query state typing (optional here but difficult to remove)
         query.beforeExploration.tap(this::beforeExploration);
         query.beforeStatePicked.tap(this::beforeStatePicked);
@@ -31,7 +31,7 @@ public final class LogEventsBehaviour<StateType extends State> extends AbstractB
         System.out.println("beforeStatePicked");
     }
 
-    private StateType pickNextState(ExplorationQuery<StateType> query, Function<ExplorationQuery<StateType>, StateType> next) {
+    private StateType pickNextState(Query<StateType> query, Function<Query<StateType>, StateType> next) {
         System.out.println("pickNextState");
         return next.apply(query);
     }

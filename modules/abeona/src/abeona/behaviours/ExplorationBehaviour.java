@@ -1,9 +1,9 @@
 package abeona.behaviours;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.State;
 
 public interface ExplorationBehaviour<StateType extends State> {
-    void attach(ExplorationQuery<StateType> explorationQuery);
-    void detach(ExplorationQuery<StateType> explorationQuery);
+    void attach(Query<StateType> query);
+    void detach(Query<StateType> query);
 }

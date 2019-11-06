@@ -16,14 +16,14 @@ public class ExplorationTerminationEvent<StateType extends State> extends Explor
         return Optional.ofNullable(terminationError);
     }
 
-    public ExplorationTerminationEvent(ExplorationQuery<StateType> explorationQuery, TerminationType terminationType) {
-        super(explorationQuery);
+    public ExplorationTerminationEvent(Query<StateType> query, TerminationType terminationType) {
+        super(query);
         this.terminationType = terminationType;
         this.terminationError = null;
     }
 
-    public ExplorationTerminationEvent(ExplorationQuery<StateType> explorationQuery, Throwable error) {
-        super(explorationQuery);
+    public ExplorationTerminationEvent(Query<StateType> query, Throwable error) {
+        super(query);
         Arguments.requireNonNull(error, "error");
         this.terminationType = TerminationType.RuntimeError;
         this.terminationError = error;

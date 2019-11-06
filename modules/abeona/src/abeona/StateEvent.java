@@ -9,8 +9,8 @@ public class StateEvent<StateType extends State> extends ExplorationEvent<StateT
         return state;
     }
 
-    public StateEvent(ExplorationQuery<StateType> explorationQuery, StateType state) {
-        super(explorationQuery);
+    public StateEvent(Query<StateType> query, StateType state) {
+        super(query);
         Arguments.requireNonNull(state, "state");
         this.state = state;
     }

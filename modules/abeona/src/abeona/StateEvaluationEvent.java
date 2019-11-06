@@ -20,8 +20,8 @@ public final class StateEvaluationEvent<StateType extends State> extends Explora
         return transitionEvaluations;
     }
 
-    public StateEvaluationEvent(ExplorationQuery<StateType> explorationQuery, StateType state, Stream<TransitionEvaluationEvent<StateType>> transitionEvaluations) {
-        super(explorationQuery);
+    public StateEvaluationEvent(Query<StateType> query, StateType state, Stream<TransitionEvaluationEvent<StateType>> transitionEvaluations) {
+        super(query);
         Arguments.requireNonNull(state, "state");
         Arguments.requireNonNull(transitionEvaluations, "transitionEvaluations");
         this.state = state;

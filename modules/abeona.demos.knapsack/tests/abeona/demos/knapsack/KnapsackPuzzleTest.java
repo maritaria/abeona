@@ -1,6 +1,6 @@
 package abeona.demos.knapsack;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.Transition;
 import abeona.frontiers.QueueFrontier;
 import abeona.heaps.HashSetHeap;
@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.stream.Stream;
 
 class KnapsackPuzzleTest {
-    private void solveWithQuery(ExplorationQuery<KnapsackFilling> query) {
+    private void solveWithQuery(Query<KnapsackFilling> query) {
         // Setup puzzle
         final var puzzle = new KnapsackPuzzle(5);
         puzzle.availableItems.add(new Item(1, 1));
@@ -44,7 +44,7 @@ class KnapsackPuzzleTest {
 
     @Test
     void solveWithBfs() {
-        final var query = new ExplorationQuery<KnapsackFilling>(QueueFrontier.lifoFrontier(),
+        final var query = new Query<KnapsackFilling>(QueueFrontier.lifoFrontier(),
                 new HashSetHeap<>(),
                 state -> state.next().map(next -> new Transition<>(state, next)));
         solveWithQuery(query);

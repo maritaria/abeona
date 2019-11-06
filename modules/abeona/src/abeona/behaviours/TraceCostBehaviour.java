@@ -17,9 +17,9 @@ public class TraceCostBehaviour<StateType extends State> extends AbstractBehavio
     }
 
     @Override
-    public void attach(ExplorationQuery<StateType> explorationQuery) {
-        Arguments.requireNonNull(explorationQuery, "explorationQuery");
-        tapQueryBehaviour(explorationQuery, explorationQuery.onTransitionEvaluation, this::onTransitionEvaluation);
+    public void attach(Query<StateType> query) {
+        Arguments.requireNonNull(query, "query");
+        tapQueryBehaviour(query, query.onTransitionEvaluation, this::onTransitionEvaluation);
     }
 
     private void onTransitionEvaluation(TransitionEvaluationEvent<StateType> event) {

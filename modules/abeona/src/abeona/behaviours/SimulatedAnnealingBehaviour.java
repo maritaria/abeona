@@ -1,6 +1,6 @@
 package abeona.behaviours;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.State;
 import abeona.aspects.BiFunctionTap;
 import abeona.frontiers.Frontier;
@@ -21,7 +21,7 @@ public class SimulatedAnnealingBehaviour<StateType extends State> extends Abstra
     private final long randomSeed;
     private final ToDoubleFunction<StateType> energy;
     private final TransitionChance probability;
-    private final Map<ExplorationQuery<StateType>, InsertIntoFrontier> interceptors = new WeakHashMap<>(1);
+    private final Map<Query<StateType>, InsertIntoFrontier> interceptors = new WeakHashMap<>(1);
 
     public SimulatedAnnealingBehaviour(
             double startingTemperature,
@@ -41,16 +41,17 @@ public class SimulatedAnnealingBehaviour<StateType extends State> extends Abstra
     }
 
     @Override
-    public void attach(ExplorationQuery<StateType> explorationQuery) {
-        final var interceptor = new InsertIntoFrontier(explorationQuery);
-        tapQueryBehaviour(explorationQuery, explorationQuery.insertIntoFrontier, interceptor);
-        tapQueryBehaviour(explorationQuery,
-                explorationQuery.afterStatePicked,
+    public void attach(Query<StateType> query) {
+        final var interceptor = new InsertIntoFrontier(query);
+        tapQueryBehaviour(query, query.insertIntoFrontier, interceptor);
+        tapQueryBehaviour(
+                query,
+                query.afterStatePicked,
                 event -> interceptor.setCurrent(event.getState()));
-        interceptors.put(explorationQuery, interceptor);
+        interceptors.put(query, interceptor);
     }
 
-    public void resetTemperature(ExplorationQuery<StateType> query) {
+    public void resetTemperature(Query<StateType> query) {
         Arguments.requireNonNull(query, "query");
         final var interceptor = interceptors.get(query);
         if (interceptor != null) {
@@ -58,7 +59,7 @@ public class SimulatedAnnealingBehaviour<StateType extends State> extends Abstra
         }
     }
 
-    public OptionalDouble getTemperature(ExplorationQuery<StateType> query) {
+    public OptionalDouble getTemperature(Query<StateType> query) {
         Arguments.requireNonNull(query, "query");
         final var interceptor = interceptors.get(query);
         if (interceptor != null) {
@@ -69,14 +70,14 @@ public class SimulatedAnnealingBehaviour<StateType extends State> extends Abstra
     }
 
     private final class InsertIntoFrontier implements BiFunctionTap.Interceptor<Frontier<StateType>, Stream<StateType>, Boolean> {
-        private final ExplorationQuery<StateType> query;
+        private final Query<StateType> query;
         private final Random random = new Random(randomSeed);
         private double progress = 0;
         private double temperature = startingTemperature;
-        private StateType current = null; // Updated through ExplorationQuery.afterStatePicked
+        private StateType current = null; // Updated through Query.afterStatePicked
         private double currentEnergy = 0;
 
-        InsertIntoFrontier(ExplorationQuery<StateType> query) {
+        InsertIntoFrontier(Query<StateType> query) {
             this.query = query;
         }
 

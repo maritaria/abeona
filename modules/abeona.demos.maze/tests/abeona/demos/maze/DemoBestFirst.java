@@ -1,11 +1,9 @@
 package abeona.demos.maze;
 
-import abeona.ExplorationQuery;
+import abeona.Query;
 import abeona.behaviours.TraceCostFrontierBehaviour;
 import abeona.frontiers.TreeMapFrontier;
 import abeona.heaps.HashSetHeap;
-import abeona.metadata.LookupMetadataStore;
-import abeona.metadata.OnStateMetadataStore;
 
 import java.util.Comparator;
 import java.util.function.ToDoubleFunction;
@@ -18,7 +16,7 @@ class DemoBestFirst extends DemoBase {
     }
 
     @Override
-    ExplorationQuery<PlayerState> prepareQuery(Maze maze, Position start, Position end) {
+    Query<PlayerState> prepareQuery(Maze maze, Position start, Position end) {
         final ToDoubleFunction<PlayerState> heuristic = state -> state.getLocation().getPos().distance(end);
         final var cost = new TraceCostFrontierBehaviour<PlayerState>(t -> 1);
         final var comp = Comparator
@@ -31,7 +29,7 @@ class DemoBestFirst extends DemoBase {
                 .thenComparingInt(state -> state.getLocation().getPos().getY());
         final var frontier = TreeMapFrontier.withExactOrdering(comp);
         final var heap = new HashSetHeap<PlayerState>();
-        final var query = new ExplorationQuery<>(frontier, heap, PlayerState::next);
+        final var query = new Query<>(frontier, heap, PlayerState::next);
         cost.attach(query);
         query.getFrontier().add(Stream.of(new PlayerState(maze.at(start).orElseThrow())));
         return query;
