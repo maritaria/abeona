@@ -151,7 +151,7 @@ public class SimulatedAnnealingBehaviour<StateType extends State> extends Abstra
 
         static TransitionChance standard() {
             return (currentEnergy, nextEnergy, temperature) -> {
-                if (currentEnergy < nextEnergy) {
+                if (currentEnergy > nextEnergy) {
                     return 1;
                 } else {
                     final double energyDelta = nextEnergy - currentEnergy;
