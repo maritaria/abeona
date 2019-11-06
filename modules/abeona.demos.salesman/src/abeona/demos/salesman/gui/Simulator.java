@@ -87,8 +87,6 @@ public class Simulator extends JFrame {
         query.getFrontier().clear();
         query.getHeap().clear();
         query.getFrontier().add(Stream.of(origin));
-        final var count = (int) origin.cities().count();
-        // annealing.randomBound = (count - 1) * (count - 2);
         annealing.resetTemperature(query);
     }
 
