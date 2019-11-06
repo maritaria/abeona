@@ -14,8 +14,30 @@ import java.util.stream.Stream;
 public class SalesmanPath implements State {
     private static final Random annealingRandom = new Random(1);
     private final Collection<City> order;
+    private final double scale;
 
     public SalesmanPath(Collection<City> cities) {
+        this(cities, findScale(cities));
+    }
+
+    private static double findScale(Collection<City> cities) {
+        if (cities.size() < 2) {
+            throw new IllegalArgumentException("must supply at least two cities");
+        }
+        final var iterator = cities.iterator();
+        double scale = iterator.next().distance(iterator.next());
+        for (final var city : cities) {
+            for (final var other : cities) {
+                final var delta = city.distance(other);
+                if (delta > scale) {
+                    scale = delta;
+                }
+            }
+        }
+        return scale;
+    }
+
+    private SalesmanPath(Collection<City> cities, double scale) {
         final var list = new ArrayList<>(cities.size());
         for (final var city : cities) {
             if (list.contains(city)) {
@@ -23,9 +45,10 @@ public class SalesmanPath implements State {
             }
             list.add(city);
         }
-
         this.order = Collections.unmodifiableCollection(cities);
+        this.scale = scale;
     }
+
 
     public Stream<City> cities() {
         return order.stream();
@@ -40,12 +63,12 @@ public class SalesmanPath implements State {
         final var first = iterator.next();
         var previous = first;
         while (iterator.hasNext()) {
-            var current = iterator.next();
+            final var current = iterator.next();
             length += previous.distance(current);
             previous = current;
         }
         length += previous.distance(first);
-        return length;
+        return length / scale;
     }
 
 
@@ -69,9 +92,9 @@ public class SalesmanPath implements State {
     }
 
     public Stream<SalesmanPath> nextAnnealing() {
-        final int size = order.size();
-        final int begin = 1 + annealingRandom.nextInt(size - 1);
-        final int end = begin + annealingRandom.nextInt(size);
+        final int size = order.size() - 1;//3
+        final int begin = annealingRandom.nextInt(size);//0 1
+        final int end = begin + 1 + annealingRandom.nextInt(size - begin);
         return Stream.of(this.swap(begin, end));
     }
 
