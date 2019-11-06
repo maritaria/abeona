@@ -1,6 +1,5 @@
 package abeona.demos.salesman.gui;
 
-import abeona.behaviours.SimulatedAnnealingBehaviour;
 import abeona.demos.salesman.City;
 import abeona.demos.salesman.SalesmanPath;
 import abeona.util.Arguments;
@@ -34,16 +33,16 @@ public class PathView extends JComponent {
         if (!iterator.hasNext()) {
             return;
         }
-        var previous = iterator.next();
+        final var first = iterator.next();
+        var previous = first;
         this.paintCity(g, previous);
-
         while (iterator.hasNext()) {
             var next = iterator.next();
             this.paintCity(g, next);
             this.paintPath(g, previous, next);
             previous = next;
         }
-
+        this.paintPath(g, previous, first);
         final var length = path.getLength();
         g.setColor(Color.black);
         g.drawString("Length: " + length, 100, 50);
