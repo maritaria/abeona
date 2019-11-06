@@ -1,7 +1,7 @@
 package abeona.demos.salesman.gui;
 
-import abeona.Query;
 import abeona.NextFunction;
+import abeona.Query;
 import abeona.behaviours.SimulatedAnnealingBehaviour;
 import abeona.demos.salesman.City;
 import abeona.demos.salesman.SalesmanPath;
@@ -11,17 +11,15 @@ import abeona.heaps.NullHeap;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.stream.Stream;
 
 public class Simulator extends JFrame {
     private final PathView pathView = new PathView();
+    private final JLabel terminationLabel = new JLabel();
     private SalesmanPath origin;
     private final Query<SalesmanPath> query;
-    private final ExplorationRunner<SalesmanPath> runner;
     private final SimulatedAnnealingBehaviour<SalesmanPath> annealing;
 
 
@@ -36,7 +34,6 @@ public class Simulator extends JFrame {
                 SalesmanPath::getLength,
                 SimulatedAnnealingBehaviour.TransitionChance.standard());
         annealing.attach(query);
-        runner = new ExplorationRunner<>(query);
 
         // Init visuals
         setPreferredSize(new Dimension(400, 300));
@@ -72,13 +69,8 @@ public class Simulator extends JFrame {
         final var resetTemperatureButton = new JButton("Reset temperature");
         resetTemperatureButton.addActionListener(event -> this.annealing.resetTemperature(this.query));
         buttonsPanel.add(resetTemperatureButton);
-
-        this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                runner.stop();
-            }
-        });
+        content.add(terminationLabel, BorderLayout.NORTH);
+        terminationLabel.setVisible(false);
     }
 
     private void changeOrigin() {
@@ -104,7 +96,15 @@ public class Simulator extends JFrame {
     }
 
     private void nextStep(int amount) {
-        runner.nextStep(amount);
+        terminationLabel.setVisible(false);
+        for (int i = 0; i < amount; i++) {
+            final var termination = query.exploreNext();
+            if (termination.isPresent()) {
+                terminationLabel.setText("Exploration terminated: " + termination.get().toString());
+                terminationLabel.setVisible(true);
+                break;
+            }
+        }
         final var frontier = (ManagedFrontier<SalesmanPath>) query.getFrontier();
         final var first = frontier.stream().findFirst();
         first.ifPresent(pathView::setPath);

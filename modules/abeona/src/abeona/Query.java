@@ -12,6 +12,7 @@ import abeona.metadata.MetadataStore;
 import abeona.util.Arguments;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.BiFunction;
@@ -83,19 +84,39 @@ public final class Query<StateType extends State> {
         try {
             beforeExploration.accept(new ExplorationEvent<>(this));
             while (frontier.hasNext()) {
-                final StateType next = pickNextState();
-                this.evaluateState(next);
+                explorationStep();
             }
         } catch (TerminateExplorationSignal signal) {
             afterExploration.accept(new ExplorationTerminationEvent<>(this, TerminationType.ManualTermination));
-            return TerminationType.FrontierExhaustion;
+            return TerminationType.ManualTermination;
         } catch (Throwable error) {
-            // TODO: Verify no fall-through for the catches
             afterExploration.accept(new ExplorationTerminationEvent<>(this, error));
             throw new RuntimeException("An error occurred during exploration", error);
         }
         afterExploration.accept(new ExplorationTerminationEvent<>(this, TerminationType.FrontierExhaustion));
         return TerminationType.FrontierExhaustion;
+    }
+
+    public Optional<TerminationType> exploreNext() {
+        if (!frontier.hasNext()) {
+            return Optional.of(TerminationType.FrontierExhaustion);
+        } else {
+            try {
+                explorationStep();
+                return Optional.empty();
+            } catch (TerminateExplorationSignal signal) {
+                afterExploration.accept(new ExplorationTerminationEvent<>(this, TerminationType.ManualTermination));
+                return Optional.of(TerminationType.ManualTermination);
+            } catch (Throwable error) {
+                afterExploration.accept(new ExplorationTerminationEvent<>(this, error));
+                throw new RuntimeException("An error occurred during exploration", error);
+            }
+        }
+    }
+
+    private void explorationStep() {
+        final StateType next = pickNextState();
+        evaluateState(next);
     }
 
     private StateType pickNextState() {
