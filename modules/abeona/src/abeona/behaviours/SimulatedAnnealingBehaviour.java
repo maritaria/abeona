@@ -6,7 +6,10 @@ import abeona.aspects.BiFunctionTap;
 import abeona.frontiers.Frontier;
 import abeona.util.Arguments;
 
-import java.util.*;
+import java.util.Map;
+import java.util.OptionalDouble;
+import java.util.Random;
+import java.util.WeakHashMap;
 import java.util.function.BiFunction;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
@@ -17,18 +20,24 @@ public class SimulatedAnnealingBehaviour<StateType extends State> extends Abstra
     private final double settleSpeed;
     private final long randomSeed;
     private final ToDoubleFunction<StateType> energy;
+    private final TransitionChance probability;
     private final Map<ExplorationQuery<StateType>, InsertIntoFrontier> interceptors = new WeakHashMap<>(1);
-    public int randomBound = 1000;
 
     public SimulatedAnnealingBehaviour(
-            double startingTemperature, double settleSpeed, long randomSeed, ToDoubleFunction<StateType> energy
+            double startingTemperature,
+            double settleSpeed,
+            long randomSeed,
+            ToDoubleFunction<StateType> energy,
+            TransitionChance probability
     ) {
         Arguments.requireMinimum(Double.MIN_VALUE, settleSpeed, "settleSpeed");
         Arguments.requireNonNull(energy, "energy");
+        Arguments.requireNonNull(probability, "probability");
         this.startingTemperature = startingTemperature;
         this.settleSpeed = settleSpeed;
         this.randomSeed = randomSeed;
         this.energy = energy;
+        this.probability = probability;
     }
 
     @Override
@@ -89,44 +98,13 @@ public class SimulatedAnnealingBehaviour<StateType extends State> extends Abstra
                 // Empty the frontier
                 frontier.clear();
                 final var nextState = findNext(states);
-                return nextState == null ? false : frontier.add(Stream.of(nextState));
+                return nextState != null && frontier.add(Stream.of(nextState));
             } finally {
                 updateTemperature();
             }
         }
 
-
         private StateType findNext(Stream<StateType> states) {
-            final var iterator = states.iterator();
-            if (!iterator.hasNext()) {
-                return null;
-            }
-            final var collected = new ArrayList<StateType>(randomBound);
-            collected.add(iterator.next());
-            int collectedCount = 1;
-            while (iterator.hasNext() || !collected.isEmpty()) {
-                int index = random.nextInt(randomBound);
-                if (index >= collectedCount) {
-                    for (int i = 0; i < index; i++) {
-                        if (iterator.hasNext()) {
-                            collected.add(iterator.next());
-                            collectedCount++;
-                        } else {
-                            index %= collectedCount;
-                            break;
-                        }
-                    }
-                }
-                collectedCount--;
-                final var item = collected.remove(index);
-                if (shouldInsert(item)) {
-                    return item;
-                }
-            }
-            return current;
-        }
-
-        private StateType findNext2(Stream<StateType> states) {
             // Collect the neighbours
             final var items = states.collect(Collectors.toList());
             final int itemsCount = items.size();
@@ -147,11 +125,10 @@ public class SimulatedAnnealingBehaviour<StateType extends State> extends Abstra
 
         private boolean shouldInsert(StateType next) {
             final var itemEnergy = energy.applyAsDouble(next);
-            if (itemEnergy < currentEnergy) {
+            final var chance = probability.get(currentEnergy, itemEnergy, temperature);
+            if (chance >= 1) {
                 return true;
             } else {
-                final double energyDelta = itemEnergy - currentEnergy;
-                final double chance = Math.exp(-energyDelta / temperature);
                 final double rolled = random.nextDouble();
                 return rolled < chance;
             }
@@ -168,11 +145,19 @@ public class SimulatedAnnealingBehaviour<StateType extends State> extends Abstra
         }
     }
 
-    private static final class AnnealingState {
-        double temperature;
+    @FunctionalInterface
+    public interface TransitionChance {
+        double get(double currentEnergy, double nextEnergy, double temperature);
 
-        AnnealingState(double temperature) {
-            this.temperature = temperature;
+        static TransitionChance standard() {
+            return (currentEnergy, nextEnergy, temperature) -> {
+                if (currentEnergy < nextEnergy) {
+                    return 1;
+                } else {
+                    final double energyDelta = nextEnergy - currentEnergy;
+                    return Math.exp(-energyDelta / temperature);
+                }
+            };
         }
     }
 }

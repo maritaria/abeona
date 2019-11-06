@@ -25,8 +25,8 @@ public class ExplorationRunner<StateType extends State> {
         }
     }
 
-    public void nextStep() {
-        stepBehaviour.next(this.query);
+    public void nextStep(int stepCount) {
+        stepBehaviour.next(this.query, stepCount);
     }
 
     public void stop() {

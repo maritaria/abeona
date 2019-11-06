@@ -11,7 +11,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public final class SalesmanPath implements State {
+public class SalesmanPath implements State {
+    private static final Random annealingRandom = new Random(1);
     private final Collection<City> order;
 
     public SalesmanPath(Collection<City> cities) {
@@ -63,10 +64,15 @@ public final class SalesmanPath implements State {
     }
 
     public Stream<SalesmanPath> next() {
-        Random r = new Random(this.hashCode());
-
         return IntStream.range(1, order.size() - 1).mapToObj(i -> IntStream.range(i + 1, order.size())
                 .mapToObj(j -> this.swap(i, j))).flatMap(Function.identity());
+    }
+
+    public Stream<SalesmanPath> nextAnnealing() {
+        final int size = order.size();
+        final int begin = 1 + annealingRandom.nextInt(size - 1);
+        final int end = begin + annealingRandom.nextInt(size);
+        return Stream.of(this.swap(begin, end));
     }
 
     private int normalizeIndex(int index) {

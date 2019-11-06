@@ -15,7 +15,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class Simulator extends JFrame {
@@ -27,6 +26,19 @@ public class Simulator extends JFrame {
 
 
     public Simulator() {
+        // Init query
+        query = new ExplorationQuery<>(QueueFrontier.fifoFrontier(),
+                new NullHeap<>(),
+                NextFunction.wrap(SalesmanPath::nextAnnealing));
+        annealing = new SimulatedAnnealingBehaviour<>(100,
+                0.2,
+                1,
+                SalesmanPath::getLength,
+                SimulatedAnnealingBehaviour.TransitionChance.standard());
+        annealing.attach(query);
+        runner = new ExplorationRunner<>(query);
+
+        // Init visuals
         setPreferredSize(new Dimension(400, 300));
         setResizable(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -46,19 +58,20 @@ public class Simulator extends JFrame {
         buttonsPanel.add(newCitiesButton);
         // Button: step
         final var nextStepButton = new JButton("Next step");
-        nextStepButton.addActionListener(event -> this.nextStep());
+        nextStepButton.addActionListener(event -> this.nextStep(1));
         buttonsPanel.add(nextStepButton);
         // Button: step x10
-        final var fastStepButton = new JButton("Next step (x10)");
-        fastStepButton.addActionListener(event -> IntStream.range(0, 10).forEach(i -> this.nextStep()));
+        final var fastStepButton = new JButton("10 steps");
+        fastStepButton.addActionListener(event -> this.nextStep(10));
         buttonsPanel.add(fastStepButton);
-        // Init query
-        query = new ExplorationQuery<>(QueueFrontier.fifoFrontier(),
-                new NullHeap<>(),
-                NextFunction.wrap(SalesmanPath::next));
-        annealing = new SimulatedAnnealingBehaviour<>(5, 1, 1, SalesmanPath::getLength);
-        annealing.attach(query);
-        runner = new ExplorationRunner<>(query);
+        // Button: step x100
+        final var megaStepButton = new JButton("100 steps");
+        megaStepButton.addActionListener(event -> this.nextStep(100));
+        buttonsPanel.add(megaStepButton);
+        // Button: Reset temp
+        final var resetTemperatureButton = new JButton("Reset temperature");
+        resetTemperatureButton.addActionListener(event -> this.annealing.resetTemperature(this.query));
+        buttonsPanel.add(resetTemperatureButton);
 
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -75,7 +88,7 @@ public class Simulator extends JFrame {
         query.getHeap().clear();
         query.getFrontier().add(Stream.of(origin));
         final var count = (int) origin.cities().count();
-        annealing.randomBound = (count - 1) * (count - 2);
+        // annealing.randomBound = (count - 1) * (count - 2);
         annealing.resetTemperature(query);
     }
 
@@ -92,8 +105,8 @@ public class Simulator extends JFrame {
         return new SalesmanPath(cities);
     }
 
-    private void nextStep() {
-        runner.nextStep();
+    private void nextStep(int amount) {
+        runner.nextStep(amount);
         final var frontier = (ManagedFrontier<SalesmanPath>) query.getFrontier();
         final var first = frontier.stream().findFirst();
         first.ifPresent(pathView::setPath);
