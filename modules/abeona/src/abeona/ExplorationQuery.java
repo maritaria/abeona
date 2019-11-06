@@ -23,7 +23,7 @@ public final class ExplorationQuery<StateType extends State> {
     private final Frontier<StateType> frontier;
     private final Heap<StateType> heap;
     private final BiFunction<ExplorationQuery<StateType>, StateType, Boolean> isKnownDefault;
-    private final Function<StateType, Stream<Transition<StateType>>> outgoingTransitionGenerator;
+    private final NextFunction<StateType> nextFunction;
     private final WeakHashMap<StateType, StateType> stateIdentities = new WeakHashMap<>();
     private final MetadataStore<StateType> metadata;
 
@@ -42,27 +42,27 @@ public final class ExplorationQuery<StateType extends State> {
     public ExplorationQuery(
             Frontier<StateType> frontier,
             Heap<StateType> heap,
-            Function<StateType, Stream<Transition<StateType>>> outgoingTransitionGenerator
+            NextFunction<StateType> nextFunction
     ) {
-        this(frontier, heap, outgoingTransitionGenerator, new LookupMetadataStore<>());
+        this(frontier, heap, nextFunction, new LookupMetadataStore<>());
     }
 
     public ExplorationQuery(
             Frontier<StateType> frontier,
             Heap<StateType> heap,
-            Function<StateType, Stream<Transition<StateType>>> outgoingTransitionGenerator,
+            NextFunction<StateType> nextFunction,
             MetadataStore<StateType> metadata
     ) {
         Arguments.requireNonNull(frontier, "frontier");
         Arguments.requireNonNull(heap, "heap");
-        Arguments.requireNonNull(outgoingTransitionGenerator, "outgoingTransitionGenerator");
+        Arguments.requireNonNull(nextFunction, "nextFunction");
         Arguments.requireNonNull(metadata, "metadata");
         this.frontier = frontier;
         this.heap = heap;
         final var q = ExplorationQuery.defaultIsKnownPredicate(frontier, heap);
         this.isKnownDefault = (query, state) -> q.test(state);
         this.isKnown = new BiFunctionTap<>(this.isKnownDefault);
-        this.outgoingTransitionGenerator = outgoingTransitionGenerator;
+        this.nextFunction = nextFunction;
         this.metadata = metadata;
     }
 
@@ -112,7 +112,7 @@ public final class ExplorationQuery<StateType extends State> {
 
     public void evaluateState(StateType state) {
         Arguments.requireNonNull(state, "state");
-        final var evaluationEvents = outgoingTransitionGenerator.apply(state)
+        final var evaluationEvents = nextFunction.apply(state)
                 .map(this::internTransition)
                 .map(this::createTransitionEvaluationEvent)
                 .peek(onTransitionEvaluation)
