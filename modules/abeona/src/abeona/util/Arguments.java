@@ -25,6 +25,12 @@ public final class Arguments {
         }
     }
 
+    public static void requireMinimum(double minimumInclusive, double realValue, String name) {
+        if (realValue < minimumInclusive) {
+            throw new IllegalArgumentException("Argument " + name + " must be larger than or equal to " + minimumInclusive);
+        }
+    }
+
     public static void requireBelowMaximum(long maximumExclusive, long realValue, String name) {
         if (realValue > maximumExclusive) {
             throw new IllegalArgumentException("Argument " + name + " must be smaller than " + maximumExclusive);
