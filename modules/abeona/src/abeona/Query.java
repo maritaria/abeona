@@ -18,12 +18,12 @@ import java.util.WeakHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 public final class Query<StateType extends State> {
     private final Frontier<StateType> frontier;
     private final Heap<StateType> heap;
-    private final BiFunction<Query<StateType>, StateType, Boolean> isKnownDefault;
     private final NextFunction<StateType> nextFunction;
     private final WeakHashMap<StateType, StateType> stateIdentities = new WeakHashMap<>();
     private final MetadataStore<StateType> metadata;
@@ -60,11 +60,10 @@ public final class Query<StateType extends State> {
         Arguments.requireNonNull(metadata, "metadata");
         this.frontier = frontier;
         this.heap = heap;
-        final var q = Query.defaultIsKnownPredicate(frontier, heap);
-        this.isKnownDefault = (query, state) -> q.test(state);
-        this.isKnown = new BiFunctionTap<>(this.isKnownDefault);
         this.nextFunction = nextFunction;
         this.metadata = metadata;
+        final var isKnownPredicate = Query.defaultIsKnownPredicate(frontier, heap);
+        this.isKnown = new BiFunctionTap<>((query, state) -> isKnownPredicate.test(state));
     }
 
     public final EventTap<ExplorationEvent<StateType>> beforeExploration = new EventTap<>();
@@ -79,6 +78,7 @@ public final class Query<StateType extends State> {
     public final BiFunctionTap<Frontier<StateType>, Stream<StateType>, Boolean> insertIntoFrontier = new BiFunctionTap<>(Frontier::add);
     public final FunctionTap<Query<StateType>, StateType> pickNextState = new FunctionTap<>(Query::pickNextStateInternal);
     public final BiFunctionTap<Query<StateType>, StateType, Boolean> isKnown;
+    public final FunctionTap<StateType, StateType> internState = new FunctionTap<>(state->stateIdentities.computeIfAbsent(state, Function.identity()));
 
     public TerminationType explore() {
         try {
@@ -180,9 +180,9 @@ public final class Query<StateType extends State> {
                 .map(b -> (T) b);
     }
 
-    public StateType internState(StateType state) {
-        Arguments.requireNonNull(state, "state");
-        return stateIdentities.computeIfAbsent(state, Function.identity());
+    private StateType internState(StateType state) {
+        return internState.apply(state);
+        // return stateIdentities.computeIfAbsent(state, Function.identity());
         // TODO: Documentation
         // TODO: Unit tests
     }
@@ -196,7 +196,7 @@ public final class Query<StateType extends State> {
         if (originalTarget == internedTarget && originalSource == internedSource) {
             return transition;
         } else {
-            return new Transition<>(internedSource, internedTarget);
+            return new Transition<>(internedSource, internedTarget, transition.getUserdata());
         }
         // TODO: Documentation
         // TODO: Unit tests
