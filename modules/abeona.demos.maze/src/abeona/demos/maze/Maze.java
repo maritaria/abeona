@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-class Maze {
+public final class Maze {
     private final int width, height;
     private final HashMap<Position, Cell> cells;
 
-    Maze(int width, int height) {
+    public Maze(int width, int height) {
         Arguments.requireMinimum(1, width, "width");
         Arguments.requireMinimum(1, height, "height");
         this.width = width;

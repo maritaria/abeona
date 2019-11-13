@@ -2,6 +2,10 @@ package abeona;
 
 import abeona.util.Arguments;
 
+/**
+ * Represents the 
+ * @param <StateType>
+ */
 public final class Transition<StateType extends State> {
     private final StateType source, target;
     private final Object userdata;

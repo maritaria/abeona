@@ -11,7 +11,7 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-class PlayerState implements State {
+public class PlayerState implements State {
     private final Maze.Cell location;
 
     PlayerState(Maze.Cell location) {
