@@ -26,5 +26,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="org.openjdk.jmh:jmh-generator-annprocess:1.22" level="project" />
+    <orderEntry type="library" name="org.openjdk.jmh:jmh-core:1.21" level="project" />
   </component>
 </module>

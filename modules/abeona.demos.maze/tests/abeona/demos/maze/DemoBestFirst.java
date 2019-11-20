@@ -9,7 +9,7 @@ import java.util.Comparator;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Stream;
 
-class DemoBestFirst extends DemoBase {
+public class DemoBestFirst extends DemoBase {
     @Override
     String algorithmName() {
         return "best-first";

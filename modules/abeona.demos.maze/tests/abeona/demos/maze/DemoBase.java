@@ -6,18 +6,29 @@ import abeona.behaviours.IsKnownOptimization;
 import abeona.behaviours.TerminateOnGoalStateBehaviour;
 import abeona.util.MappingIterator;
 import org.junit.jupiter.api.Test;
+import org.openjdk.jmh.annotations.*;
 
 import java.util.Random;
 
-abstract class DemoBase {
+@State(Scope.Benchmark)
+public abstract class DemoBase {
     public static boolean OPTIMIZE = false;
-    private static final int SEED = 1;
-    private static final int WIDTH = 200;
-    private static final int HEIGHT = 200;
-    private static final int START_X = WIDTH / 2;
-    private static final int START_Y = 0;
-    private static final int END_X = WIDTH - START_X;
-    private static final int END_Y = HEIGHT - 1;
+    private static int SEED = 1;
+    private static int WIDTH = 200;
+    private static int HEIGHT = 200;
+    private static int START_X = WIDTH / 2;
+    private static int START_Y = 0;
+    private static int END_X = WIDTH - START_X;
+    private static int END_Y = HEIGHT - 1;
+
+    public static void setSize(int size) {
+        WIDTH = size;
+        HEIGHT = size;
+        START_X = WIDTH / 2;
+        START_Y = 0;
+        END_X = WIDTH - START_X;
+        END_Y = HEIGHT - 1;
+    }
 
     private Maze prepareMaze() {
         return new MazeGenerator(new Random(SEED)).createMazeSubdiv(WIDTH, HEIGHT);
@@ -54,22 +65,27 @@ abstract class DemoBase {
         final var renderer = new MazeRenderer(maze);
         renderer.paintHeap(c -> query.getHeap().contains(new PlayerState(c)));
         renderer.paintWalls(START_X, END_X);
-        backtrace.ifPresent(playerStateIterator -> renderer.paintTrace(new MappingIterator<>(playerStateIterator, s -> s.getLocation().getPos())));
+        backtrace.ifPresent(playerStateIterator -> renderer.paintTrace(new MappingIterator<>(
+                playerStateIterator,
+                s -> s.getLocation().getPos())));
         renderer.save(renderExplorationOutputPath());
     }
 
     @Test
     void measureRuntimePerformance() {
+        SEED = 1;
         final int warmup = 5;
         final int repeats = 10;
         final String name = algorithmName();
         System.out.println("Running warmup for " + name);
         for (int i = 0; i < warmup; i++) {
+            SEED++;
             performanceRun();
         }
         System.out.println("Running main performance test for " + name);
         long totalRuntime = 0;
         for (int i = 0; i < repeats; i++) {
+            SEED++;
             totalRuntime += performanceRun();
         }
         final long average = totalRuntime / repeats;
@@ -93,5 +109,16 @@ abstract class DemoBase {
 
     @Test
     void measureMemoryUsage() {
+    }
+
+    @Param({"25", "50", "75", "100", "125", "150", "175", "200", "225", "250"})
+    public int mazeSize;
+    public Query<PlayerState> benchmarkQuery;
+
+    @Setup(Level.Invocation)
+    public void benchmarkSetupQuery() {
+        setSize(mazeSize);
+        final var maze = prepareMaze();
+        benchmarkQuery = prepareQuery(maze);
     }
 }

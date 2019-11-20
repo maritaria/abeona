@@ -290,7 +290,7 @@ public final class Query<StateType extends State> {
                 .map(b -> (T) b);
     }
 
-    private StateType internState(StateType state) {
+    StateType internState(StateType state) {
         return internState.apply(state);
         // return stateIdentities.computeIfAbsent(state, Function.identity());
         // TODO: Documentation

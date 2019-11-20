@@ -6,7 +6,7 @@ import abeona.heaps.HashSetHeap;
 
 import java.util.stream.Stream;
 
-class DemoDfs extends DemoBase {
+public class DemoDfs extends DemoBase {
     @Override
     String algorithmName() {
         return "dfs";

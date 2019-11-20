@@ -8,7 +8,7 @@ import abeona.heaps.HashSetHeap;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-class DemoDijkstra extends DemoBase {
+public class DemoDijkstra extends DemoBase {
     @Override
     String algorithmName() {
         return "dijkstra";
