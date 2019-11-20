@@ -2,6 +2,10 @@ package abeona.util;
 
 import abeona.State;
 
+/**
+ * Helper class that wraps any object into a {@link State} compatible state.
+ * @param <T>
+ */
 public final class StateWrapper<T> implements State {
     private final T value;
 

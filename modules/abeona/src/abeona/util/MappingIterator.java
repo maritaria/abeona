@@ -3,6 +3,11 @@ package abeona.util;
 import java.util.Iterator;
 import java.util.function.Function;
 
+/**
+ * Iterator that wraps another iterator and transforms its results into another type
+ * @param <Source>
+ * @param <Target>
+ */
 public class MappingIterator<Source, Target> implements Iterator<Target> {
     private final Iterator<Source> sourceIterator;
     private final Function<Source, Target> transformer;

@@ -1,6 +1,8 @@
-package abeona.behaviours;
+package abeona.metadata;
 
 import abeona.*;
+import abeona.behaviours.AbstractBehaviour;
+import abeona.behaviours.SweepLineBehaviour;
 import abeona.frontiers.ManagedFrontier;
 import abeona.heaps.ManagedHeap;
 import abeona.util.Arguments;
@@ -8,13 +10,34 @@ import abeona.util.Arguments;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+/**
+ * Experimental optimization behaviour.
+ * This behaviour stores for each state whether it is known directly instead of testing the frontier and heap of a query first.
+ * This behaviour modifies the {@link Query#isKnown} interceptor
+ * @param <StateType>
+ */
 public final class IsKnownOptimization<StateType extends State> extends AbstractBehaviour<StateType> {
     private static final Object IS_KNOWN_FLAG = new Object();
 
+    /**
+     * Set if a given state is known in a certain query
+     * @param query The query under which a state may or may not be known
+     * @param state The state to set known-ness for
+     * @param isKnown The state of known-ness to apply
+     * @throws IllegalArgumentException Thrown if either the query or state are null
+     */
     public void setMark(Query<StateType> query, StateType state, boolean isKnown) {
+        Arguments.requireNonNull(query, "query");
+        Arguments.requireNonNull(state, "state");
         query.getMetadata().set(state, this, isKnown ? IS_KNOWN_FLAG : null);
     }
 
+    /**
+     * Gets whether a given state is known in a given query
+     * @param query The query under which exploration is occurring
+     * @param state The state
+     * @return
+     */
     public boolean getMark(Query<StateType> query, StateType state) {
         return query.getMetadata().get(state, this).isPresent();
     }

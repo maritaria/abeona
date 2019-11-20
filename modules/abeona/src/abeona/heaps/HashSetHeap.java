@@ -11,19 +11,23 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.ToIntFunction;
 
+/**
+ * Implements a {@link HashSet} based heap.
+ * All operations are funneled into a hashset.
+ * The {@link StateType} is expected to override {@link Object#hashCode()} and {@link Object#equals(Object)} properly.
+ * @param <StateType>
+ */
 public class HashSetHeap<StateType extends State> implements ManagedHeap<StateType> {
     // TODO: Create two implementations, one with a wrapper and one without
-    private final Set<StateHolder> states = new HashSet<>();
-    private final BiPredicate<StateType, StateType> equivalence = Objects::equals;
-    private final ToIntFunction<StateType> hasher = Objects::hashCode;
+    private final Set<StateType> states = new HashSet<>();
 
     @Override
     public boolean add(StateType state) {
-        return states.add(new StateHolder(state));
+        return states.add(state);
     }
 
     public boolean remove(StateType state) {
-        return states.remove(new StateHolder(state));
+        return states.remove(state);
     }
 
     @Override
@@ -33,41 +37,11 @@ public class HashSetHeap<StateType extends State> implements ManagedHeap<StateTy
 
     @Override
     public Iterator<StateType> iterator() {
-        return new MappingIterator<>(states.iterator(), StateHolder::getState);
+        return states.iterator();
     }
 
     @Override
     public boolean contains(StateType state) {
-        return states.contains(new StateHolder(state));
-    }
-
-    private class StateHolder {
-        private final StateType state;
-
-        public StateType getState() {
-            return state;
-        }
-
-        public StateHolder(StateType state) {
-            Arguments.requireNonNull(state, "state");
-            this.state = state;
-        }
-
-        @Override
-        public int hashCode() {
-            return HashSetHeap.this.hasher.applyAsInt(state);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof HashSetHeap.StateHolder) {
-                final var other = (HashSetHeap.StateHolder) obj;
-                // assert state.getClass().isAssignableFrom(other.state.getClass()) : "incompatible state types";
-                @SuppressWarnings("unchecked") final var otherState = (StateType) other.state;
-                return HashSetHeap.this.equivalence.test(state, otherState);
-            } else {
-                return false;
-            }
-        }
+        return states.contains(state);
     }
 }

@@ -10,11 +10,23 @@ import java.util.List;
 import java.util.WeakHashMap;
 import java.util.stream.Stream;
 
-// Abstract implementation of a behaviour that contains a mechanism to automatically detach events that get attached.
+/**
+ * Abstract implementation of a behaviour that contains a mechanism to automatically detach events that get attached.
+ * @param <StateType>
+ */
 public abstract class AbstractBehaviour<StateType extends State> implements ExplorationBehaviour<StateType> {
     private final WeakHashMap<Query<StateType>, List<BoundTapHandler<?>>> registrations = new WeakHashMap<>();
     private final List<BoundTapHandler<?>> globalRegistrations = new ArrayList<>();
 
+    /**
+     * Tap a behaviour of a query, if {@link ExplorationBehaviour#detach(Query)} is called then this tap is automatically undone.
+     * The tap is also undone when {@link #detachAll()} is used.
+     * @param query The query to attach a tap to
+     * @param point The Tappable behaviour to tap into
+     * @param listener The handler to install into the tap
+     * @param <T> The type of tap handler
+     * @throws IllegalArgumentException Thrown if any argument is null
+     */
     protected final <T> void tapQueryBehaviour(Query<StateType> query, Tap<T> point, T listener) {
         Arguments.requireNonNull(query, "query");
         Arguments.requireNonNull(point, "point");
@@ -23,14 +35,30 @@ public abstract class AbstractBehaviour<StateType extends State> implements Expl
         list.add(new BoundTapHandler<>(point, listener));
     }
 
+    /**
+     * Tap a non-query behaviour, this tap is not undone when a query is detached through {@link ExplorationBehaviour#detach(Query)}.
+     * However, the tap is undone when the {@link #detachAll()} is invoked
+     * @param point The tappable to tap into
+     * @param listener The listener to install into the tap
+     * @param <T> The type of handler the tap uses
+     */
     protected final <T> void tapForeignBehaviour(Tap<T> point, T listener) {
         globalRegistrations.add(new BoundTapHandler<>(point, listener));
     }
 
+    /**
+     * Stream of the querries the behaviour is attached to
+     * @return
+     */
     protected final Stream<Query<StateType>> registeredQueries() {
         return registrations.keySet().stream();
     }
 
+    /**
+     * Indicates whether this behaviour has been attached to the given query.
+     * @param query The query to test attachment for
+     * @return True if any tap handlers have been registered through {@link #tapQueryBehaviour(Query, Tap, Object)} with the given query instance, false otherwise.
+     */
     protected boolean hasRegisteredTo(Query<StateType> query) {
         Arguments.requireNonNull(query, "query");
         return registrations.containsKey(query);
@@ -46,6 +74,9 @@ public abstract class AbstractBehaviour<StateType extends State> implements Expl
         }
     }
 
+    /**
+     * Performs {@link #detach(Query)} on all attached querries as well as unregister all non-query tap handlers registered through {@link #tapForeignBehaviour(Tap, Object)}
+     */
     public void detachAll() {
         while (!registrations.isEmpty()) {
             detach(registrations.keySet().iterator().next());

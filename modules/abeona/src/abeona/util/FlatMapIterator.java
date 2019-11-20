@@ -6,6 +6,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
+/**
+ * Iterator that wraps another iterator and can flatten its elements
+ * @param <Source>
+ * @param <Target>
+ */
 public class FlatMapIterator<Source, Target> implements Iterator<Target> {
     private final Iterator<Source> sourceIterator;
     private final Function<Source, Iterator<Target>> childFinder;

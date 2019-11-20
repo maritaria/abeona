@@ -15,6 +15,17 @@ import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Realizes a simulated annealing algorithm flow in a query.
+ * Taps {@link Query#insertIntoFrontier} and {@link Query#afterStatePicked}.
+ *
+ * This variation of simulated annealing works by keeping a single state in the frontier
+ * The state in the frontier is selected based on a chance to transition from the current state to the new state
+ * Each state evaluation lowers the temperature a little.
+ * If no state is accepted the current state is re-inserted into the frontier.
+ *
+ * @param <StateType>
+ */
 public class SimulatedAnnealingBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
     private final double startingTemperature;
     private final double settleSpeed;

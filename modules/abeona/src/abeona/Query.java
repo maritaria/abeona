@@ -290,11 +290,16 @@ public final class Query<StateType extends State> {
                 .map(b -> (T) b);
     }
 
-    StateType internState(StateType state) {
+    /**
+     * Performs the interning operation, using the {@link #internState} interceptor tap.
+     * The default operation of the interceptor tap is to perform interning through a weak hashmap.
+     * Meaning as long as there is a reference to a state it can be interned.
+     * The interceptor tap may be modified to exhibit arbitrary logic, including performing the identity function.
+     * @param state The state to intern
+     * @return The interned state according to the {@link #internState} interceptor tap.
+     */
+    public StateType internState(StateType state) {
         return internState.apply(state);
-        // return stateIdentities.computeIfAbsent(state, Function.identity());
-        // TODO: Documentation
-        // TODO: Unit tests
     }
 
     private Transition<StateType> internTransition(Transition<StateType> transition) {

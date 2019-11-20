@@ -2,7 +2,7 @@ package abeona.demos.maze;
 
 import abeona.Query;
 import abeona.behaviours.BacktraceBehaviour;
-import abeona.behaviours.IsKnownOptimization;
+import abeona.metadata.IsKnownOptimization;
 import abeona.behaviours.TerminateOnGoalStateBehaviour;
 import abeona.util.MappingIterator;
 import org.junit.jupiter.api.Test;

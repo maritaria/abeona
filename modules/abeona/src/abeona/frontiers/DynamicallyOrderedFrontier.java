@@ -4,6 +4,12 @@ import abeona.State;
 
 import java.util.function.Consumer;
 
+/**
+ * Extends the {@link OrderedFrontier}, indicating it supports orderings based on a mutable property.
+ * To support this the {@link #mutateOrderedProperty(State, Consumer)} must be used to wrap any modification of that property.
+ * A basic not-efficient default is provided by this interface, but it is encouraged to implement a more efficient update mechanism.
+ * @param <StateType>
+ */
 public interface DynamicallyOrderedFrontier<StateType extends State> extends OrderedFrontier<StateType> {
     /**
      * Updates the position of a state in the frontier after a mutation is applied to the state that mutates a property the sort order of the frontier is based on.
@@ -16,5 +22,14 @@ public interface DynamicallyOrderedFrontier<StateType extends State> extends Ord
      * @param state The state that you want to mutate
      * @param mutator The function that mutates the state, is guaranteed to be called
      */
-    void mutateOrderedProperty(StateType state, Consumer<StateType> mutator);
+    default void mutateOrderedProperty(StateType state, Consumer<StateType> mutator) {
+        boolean removed = this.remove(state);
+        try {
+            mutator.accept(state);
+        } finally {
+            if (removed) {
+                this.add(state);
+            }
+        }
+    }
 }

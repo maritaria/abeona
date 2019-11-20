@@ -11,19 +11,34 @@ import abeona.util.Arguments;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
+/**
+ * Limits the frontier to a maximum size.
+ * If the query uses a {@link OrderedFrontier} then the behaviour keeps the best state automatically.
+ * @param <StateType>
+ */
 public class FrontierCapacityBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
     private final long maximumFrontierSize;
 
+    /**
+     * Creates a behaviour that constrains frontiers to a fixed size.
+     * Note: you cannot set the maximum size to zero, if you want to do that use {@link abeona.heaps.NullHeap} instead.
+     * @param maximumFrontierSize The maximum number of states that are allowed to be in the frontier.
+     * @throws IllegalArgumentException Thrown if the given size is lower than 1
+     */
     public FrontierCapacityBehaviour(long maximumFrontierSize) {
         Arguments.requireMinimum(1, maximumFrontierSize, "maximumFrontierSize");
         this.maximumFrontierSize = maximumFrontierSize;
     }
 
+    /**
+     * Limits the frontier of a query to the maximum size set in this behaviour.
+     * @param query The instance to install logic into
+     * @throws IllegalArgumentException If the query uses a frontier that does not inherit from {@link ManagedFrontier}
+     */
     @Override
     public void attach(Query<StateType> query) {
         Arguments.requireNonNull(query, "query");
         Arguments.requireInstanceOf(query.getFrontier(), ManagedFrontier.class, "query.frontier");
-        Arguments.preventInstanceOf(query.getFrontier(), GeneratorFrontier.class, "query.frontier");
         tapQueryBehaviour(query, query.insertIntoFrontier, this::onFrontierInsert);
     }
 

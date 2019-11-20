@@ -26,18 +26,6 @@ public class TreeMapFrontier<StateType extends State> implements DynamicallyOrde
     }
 
     @Override
-    public void mutateOrderedProperty(StateType state, Consumer<StateType> mutator) {
-        boolean removed = tree.remove(state);
-        try {
-            mutator.accept(state);
-        } finally {
-            if (removed) {
-                tree.add(state);
-            }
-        }
-    }
-
-    @Override
     public Comparator<StateType> comparator() {
         return comparator;
     }

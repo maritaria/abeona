@@ -10,14 +10,24 @@ import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
+/**
+ * Extended version of {@link TraceCostBehaviour} which handles re-sorting the frontiers of querries.
+ * Requires the query to use a {@link DynamicallyOrderedFrontier} based frontier to allow for re-sorting on update.
+ * @param <StateType>
+ */
 public class TraceCostFrontierBehaviour<StateType extends State> extends TraceCostBehaviour<StateType> {
     public TraceCostFrontierBehaviour(ToDoubleFunction<Transition<StateType>> transitionCosts) {
         super(transitionCosts);
     }
 
+    /**
+     * @param query
+     * @throws IllegalArgumentException Thrown if the query is null or the query frontier does not implement {@link DynamicallyOrderedFrontier}.
+     */
     @Override
     public void attach(Query<StateType> query) {
-        Arguments.requireInstanceOf(query.getFrontier(), DynamicallyOrderedFrontier.class, "exlorationQuery.getFrontier()");
+        Arguments.requireNonNull(query, "query");
+        Arguments.requireInstanceOf(query.getFrontier(), DynamicallyOrderedFrontier.class, "query.getFrontier()");
         super.attach(query);
     }
 

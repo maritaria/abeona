@@ -6,6 +6,11 @@ import abeona.util.PeekableIterator;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * Implementation of a frontier that uses the streams as generators that lazily provide the states.
+ * This frontier is not ordered and cannot guarantee that the states provided are not in the heap.
+ * @param <StateType>
+ */
 public final class GeneratorFrontier<StateType extends State> implements Frontier<StateType> {
     private final Deque<Iterator<? extends StateType>> generators = new ArrayDeque<>();
     private Iterator<? extends StateType> currentGenerator = Collections.emptyIterator();
