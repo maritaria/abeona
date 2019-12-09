@@ -2,11 +2,9 @@ package abeona.demos.goatgame;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Arrays;
 
-class GameView extends JPanel {
+class StateView extends JPanel {
     private static final Color COLOR_TEXT = new Color(0xFFFFFF);
     private static final Color COLOR_DISABLED = new Color(0xBDBDBD);
     private static final Color COLOR_LAND = new Color(0x388E3C);
@@ -23,10 +21,12 @@ class GameView extends JPanel {
     private final JLabel invalidLabel = new JLabel("Invalid");
 
     private GameState currentState;
+    boolean allowClicking = false;
 
-    GameView(GameState state) {
+    StateView(GameState state) {
         // Layout
         setPreferredSize(new Dimension(240, 100));
+        setMaximumSize(getPreferredSize());
         setLayout(new GridLayout(1, 3));
         // Panels
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
@@ -84,35 +84,43 @@ class GameView extends JPanel {
     }
 
     void swapBoat() {
-        final var next = new GameState(currentState);
-        next.boatIsLeft = !next.boatIsLeft;
-        setGameState(next);
+        if (allowClicking) {
+            final var next = new GameState(currentState);
+            next.boatIsLeft = !next.boatIsLeft;
+            setGameState(next);
+        }
     }
 
     void swapSeeds() {
-        final var next = new GameState(currentState);
-        if (next.boatIsLeft == next.seedsIsLeft) {
-            next.boatIsLeft = !next.boatIsLeft;
-            next.seedsIsLeft = next.boatIsLeft;
-            setGameState(next);
+        if (allowClicking) {
+            final var next = new GameState(currentState);
+            if (next.boatIsLeft == next.seedsIsLeft) {
+                next.boatIsLeft = !next.boatIsLeft;
+                next.seedsIsLeft = next.boatIsLeft;
+                setGameState(next);
+            }
         }
     }
 
     void swapGoat() {
-        final var next = new GameState(currentState);
-        if (next.boatIsLeft == next.goatIsLeft) {
-            next.boatIsLeft = !next.boatIsLeft;
-            next.goatIsLeft = next.boatIsLeft;
-            setGameState(next);
+        if (allowClicking) {
+            final var next = new GameState(currentState);
+            if (next.boatIsLeft == next.goatIsLeft) {
+                next.boatIsLeft = !next.boatIsLeft;
+                next.goatIsLeft = next.boatIsLeft;
+                setGameState(next);
+            }
         }
     }
 
     void swapWolf() {
-        final var next = new GameState(currentState);
-        if (next.boatIsLeft == next.wolfIsLeft) {
-            next.boatIsLeft = !next.boatIsLeft;
-            next.wolfIsLeft = next.boatIsLeft;
-            setGameState(next);
+        if (allowClicking) {
+            final var next = new GameState(currentState);
+            if (next.boatIsLeft == next.wolfIsLeft) {
+                next.boatIsLeft = !next.boatIsLeft;
+                next.wolfIsLeft = next.boatIsLeft;
+                setGameState(next);
+            }
         }
     }
 
