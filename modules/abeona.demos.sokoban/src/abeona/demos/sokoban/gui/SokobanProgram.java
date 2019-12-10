@@ -2,14 +2,14 @@ package abeona.demos.sokoban.gui;
 
 import abeona.NextFunction;
 import abeona.Query;
-import abeona.behaviours.FrontierFilterBehaviour;
-import abeona.behaviours.SweepLineBehaviour;
 import abeona.behaviours.TerminateOnGoalStateBehaviour;
-import abeona.demos.sokoban.*;
+import abeona.demos.sokoban.PlayerMoveActions;
+import abeona.demos.sokoban.Position;
+import abeona.demos.sokoban.SokobanLevel;
+import abeona.demos.sokoban.SokobanState;
 import abeona.frontiers.QueueFrontier;
 import abeona.heaps.HashSetHeap;
 
-import javax.swing.*;
 import java.util.Comparator;
 import java.util.HashSet;
 
@@ -20,16 +20,21 @@ public class SokobanProgram {
         simulator.setVisible(true);
     }
 
-    public static Query<SokobanState> createQuery(SokobanState initialState) {
+    static Query<SokobanState> createQuery(SokobanState initialState) {
+        // Frontier
         final var frontier = QueueFrontier.<SokobanState>fifoFrontier();
-        // final var frontier = TreeMapFrontier.<SokobanState>withExactOrdering(progressComparatorWithoutCollisions(initialState));
-        final var heap = new HashSetHeap<SokobanState>();
-        final NextFunction<SokobanState> nextFunction = PlayerMoveActions::nextStates;
-        final var query = new Query<SokobanState>(frontier, heap, nextFunction);
-        query.addBehaviour(new TerminateOnGoalStateBehaviour<>(SokobanState::isSolved));
 
-        query.addBehaviour(new SweepLineBehaviour<SokobanState>(progressComparator(initialState)));
-        query.addBehaviour(new FrontierFilterBehaviour<>(Helpers::isSolvable));
+        // Heap
+        final var heap = new HashSetHeap<SokobanState>();
+
+        // Next function
+        final NextFunction<SokobanState> nextFunction = PlayerMoveActions::nextStates;
+
+        // Setup query
+        final var query = new Query<SokobanState>(frontier, heap, nextFunction);
+
+        // Add behaviours
+        query.addBehaviour(new TerminateOnGoalStateBehaviour<>(SokobanState::isSolved));
 
         return query;
     }
@@ -43,8 +48,7 @@ public class SokobanProgram {
         return progressComparator(initialState).thenComparing(SokobanState.nonCollidingComparator());
     }
 
-
-    public static SokobanState createInitialState() {
+    static SokobanState createInitialState() {
         // https://www.researchgate.net/profile/Bilal_Kartal/publication/312538695/figure/fig2/AS:669563205197838@1536647716634/A-solution-to-one-of-the-generated-Sokoban-puzzles-score-017-Each-successive-frame.png
         final var level = new SokobanLevel(5, 5);
         level.setWall(2, 0, true);
