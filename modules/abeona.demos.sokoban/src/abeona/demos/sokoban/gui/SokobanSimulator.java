@@ -30,6 +30,7 @@ public class SokobanSimulator extends JFrame implements ActionListener, ItemList
     private final JButton resetButton = new JButton("Reset");
     private final JButton nextButton = new JButton("Next step");
     private final JButton nextTenButton = new JButton("Next 10 steps");
+    private final JButton nextManyButton = new JButton("Next 100 steps");
     private final JButton runButton = new JButton("Run to termination");
     private final JLabel stepLabel = new JLabel();
     private final JLabel estimateLabel = new JLabel();
@@ -56,6 +57,8 @@ public class SokobanSimulator extends JFrame implements ActionListener, ItemList
         buttonBar.add(nextButton);
         nextTenButton.addActionListener(this);
         buttonBar.add(nextTenButton);
+        nextManyButton.addActionListener(this);
+        buttonBar.add(nextManyButton);
         runButton.addActionListener(this);
         buttonBar.add(runButton);
         showFrontiersCheckox.addItemListener(this);
@@ -83,6 +86,8 @@ public class SokobanSimulator extends JFrame implements ActionListener, ItemList
             onNext(1);
         } else if (source == nextTenButton) {
             onNext(10);
+        } else if (source == nextManyButton) {
+            onNext(100);
         } else if (source == runButton) {
             onRun();
         }
@@ -137,7 +142,7 @@ public class SokobanSimulator extends JFrame implements ActionListener, ItemList
                 .count();
         final var boxes = initialState.getBoxes().size();
         final var movableEntities = boxes + 1;
-        var mutations = 1;
+        double mutations = 1;
         for (int i = 0; i < movableEntities; i++) {
             mutations *= (openSpots - i);
         }

@@ -64,7 +64,7 @@ public final class GraphView extends JPanel {
         final int fontHeight = fontMetrics.getHeight();
 
         // create hatch marks and grid lines for y axis.
-        for (int i = 0; i < numberYDivisions + 1; i++) {
+        for (int i = 0; i <= numberYDivisions; i++) {
             final int x1 = padding + labelPadding;
             final int x2 = pointWidth + padding + labelPadding;
             final int y = height - ((i * (height - padding * 2 - labelPadding)) / numberYDivisions + padding + labelPadding);
@@ -82,18 +82,18 @@ public final class GraphView extends JPanel {
 
         // and for x axis
         if (length > 1) {
-            for (int i = 0; i < length; i++) {
-                final int x = i * (width - padding * 2 - labelPadding) / (length - 1) + padding + labelPadding;
+            final int divisions = Math.min(width / 40, length);
+            for (int i = 0; i <= divisions; i++) {
+                // final int x = i * (width - padding * 2 - labelPadding) / (length - 1) + padding + labelPadding;
                 final int y1 = height - padding - labelPadding;
                 final int y2 = y1 - pointWidth;
-                if ((i % ((int) ((length / 20.0)) + 1)) == 0) {
-                    g.setColor(gridColor);
-                    g.drawLine(x, height - padding - labelPadding - 1 - pointWidth, x, padding);
-                    g.setColor(Color.BLACK);
-                    final String xLabel = i + "";
-                    final int labelWidth = fontMetrics.stringWidth(xLabel);
-                    g.drawString(xLabel, x - labelWidth / 2, y1 + fontHeight + 3);
-                }
+                final int x = (i * (width - padding * 2 - labelPadding)) / divisions + padding + labelPadding;
+                g.setColor(gridColor);
+                g.drawLine(x, height - padding - labelPadding - 1 - pointWidth, x, padding);
+                g.setColor(Color.BLACK);
+                final String xLabel = ((length * i) / divisions) + "";
+                final int labelWidth = fontMetrics.stringWidth(xLabel);
+                g.drawString(xLabel, x - labelWidth / 2, y1 + fontHeight + 3);
                 g.drawLine(x, y1, x, y2);
             }
         }
@@ -114,10 +114,15 @@ public final class GraphView extends JPanel {
         final double yScale = ((double) height - 2 * padding - labelPadding) / scoreRange;
 
         final List<Point> graphPoints = new ArrayList<>(length);
+        int previousPointX = -10;
+        int minimumDelta = 2;
         for (int i = 0; i < length; i++) {
-            final int x1 = (int) (i * xScale + padding + labelPadding);
-            final int y1 = (int) ((maxScore - values.get(i)) * yScale + padding);
-            graphPoints.add(new Point(x1, y1));
+            final int x = (int) (i * xScale + padding + labelPadding);
+            final int y = (int) ((maxScore - values.get(i)) * yScale + padding);
+            if (x >= previousPointX + minimumDelta) {
+                graphPoints.add(new Point(x, y));
+                previousPointX = x;
+            }
         }
 
         for (int i = 0; i < graphPoints.size() - 1; i++) {
