@@ -41,6 +41,7 @@ class StateListView extends JPanel {
         final var view = new SokobanViewer();
         view.showSokoban(state);
         stack.add(view);
+        stack.add(Box.createRigidArea(new Dimension(5, 5)));
         items++;
     }
 
