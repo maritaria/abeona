@@ -65,10 +65,10 @@ public class SokobanSimulator extends JFrame implements ActionListener, ItemList
         buttonBar.add(terminationLabel);
         content.add(buttonBar);
         frontierGraph.setBorder(BorderFactory.createTitledBorder("Frontier size"));
-        frontierGraph.setScores(Collections.emptyList());
+        frontierGraph.setValues(Collections.emptyList());
         content.add(frontierGraph);
         heapGraph.setBorder(BorderFactory.createTitledBorder("Heap size"));
-        heapGraph.setScores(Collections.emptyList());
+        heapGraph.setValues(Collections.emptyList());
         content.add(heapGraph);
         add(new JScrollPane(content), BorderLayout.CENTER);
         onReset();
@@ -102,20 +102,20 @@ public class SokobanSimulator extends JFrame implements ActionListener, ItemList
                 if (frontier instanceof ManagedFrontier) {
                     final var managed = (ManagedFrontier<SokobanState>) frontier;
                     tapQueryBehaviour(query, query.afterStateEvaluation, evaluationEvent -> {
-                        frontierGraph.addScores(Collections.singleton((double) managed.size()));
+                        frontierGraph.addValues(Collections.singleton((int) managed.size()));
                     });
                 }
                 final var heap = query.getHeap();
                 if (heap instanceof ManagedHeap) {
                     final var managed = (ManagedHeap<SokobanState>) heap;
                     tapQueryBehaviour(query, query.afterStateEvaluation, evaluationEvent -> {
-                        heapGraph.addScores(Collections.singleton((double) managed.size()));
+                        heapGraph.addValues(Collections.singleton((int) managed.size()));
                     });
                 }
             }
         });
-        frontierGraph.setScores(Collections.emptyList());
-        heapGraph.setScores(Collections.emptyList());
+        frontierGraph.setValues(Collections.emptyList());
+        heapGraph.setValues(Collections.emptyList());
         stepPanel.setQuery(query);
         updateEstimateSize();
         nextButton.setEnabled(true);

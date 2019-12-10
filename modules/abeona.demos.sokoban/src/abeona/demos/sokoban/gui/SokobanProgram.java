@@ -10,11 +10,13 @@ import abeona.demos.sokoban.SokobanState;
 import abeona.frontiers.QueueFrontier;
 import abeona.heaps.HashSetHeap;
 
+import javax.swing.*;
 import java.util.Comparator;
 import java.util.HashSet;
 
 public class SokobanProgram {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
+        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         final var simulator = new SokobanSimulator();
         simulator.pack();
         simulator.setVisible(true);
