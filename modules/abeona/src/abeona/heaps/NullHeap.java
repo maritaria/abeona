@@ -62,4 +62,9 @@ public final class NullHeap<StateType extends State> implements ManagedHeap<Stat
     public String toString() {
         return "[NullHeap]";
     }
+
+    @Override
+    public long size() {
+        return 0;
+    }
 }

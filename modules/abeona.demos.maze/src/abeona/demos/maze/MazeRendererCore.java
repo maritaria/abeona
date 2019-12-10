@@ -1,6 +1,5 @@
 package abeona.demos.maze;
 
-import abeona.util.Arguments;
 import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.process.ColorProcessor;
@@ -9,6 +8,8 @@ import ij.process.ImageProcessor;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class MazeRendererCore {
@@ -77,53 +78,47 @@ public class MazeRendererCore {
     }
 
     static void paintLooseTrace(ImageProcessor processor, Iterator<Position> positions) {
-        if (!positions.hasNext()) return;
+        if (!positions.hasNext()) {
+            return;
+        }
         processor.setColor(colorTrace);
         // First line entrance
         var previousPosition = positions.next();
         if (positions.hasNext()) {
-            processor.moveTo(
-                    cellCenter(previousPosition.getX()),
-                    cellCenter(previousPosition.getY())
-            );
+            processor.moveTo(cellCenter(previousPosition.getX()), cellCenter(previousPosition.getY()));
             do {
                 final var position = positions.next();
-                processor.lineTo(
-                        cellCenter(position.getX()),
-                        cellCenter(position.getY())
-                );
+                processor.lineTo(cellCenter(position.getX()), cellCenter(position.getY()));
             } while (positions.hasNext());
         } else {
-            processor.drawDot(
-                    cellCenter(previousPosition.getX()),
-                    cellCenter(previousPosition.getY())
-            );
+            processor.drawDot(cellCenter(previousPosition.getX()), cellCenter(previousPosition.getY()));
         }
     }
 
-    static void paintHeap(ImageProcessor processor, Maze maze, Predicate<Maze.Cell> inHeap) {
-        processor.setColor(colorHeap);
+    static void paintFloor(ImageProcessor processor, Maze maze, Function<Maze.Cell, Optional<Color>> floorColor) {
         final var width = maze.getWidth();
         final var height = maze.getHeight();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 final var pos = new Position(x, y);
                 final var cell = maze.at(pos).orElseThrow();
-                if (inHeap.test(cell)) {
-                    processor.fillPolygon(new Polygon(new int[]{
-                            cellStart(pos.getX()),
-                            cellEnd(pos.getX()) + 1,
-                            cellEnd(pos.getX()) + 1,
-                            cellStart(pos.getX()),
-                    }, new int[]{
-                            cellStart(pos.getY()),
-                            cellStart(pos.getY()),
-                            cellEnd(pos.getY()) + 1,
-                            cellEnd(pos.getY()) + 1,
-                    }, 4));
-                }
+                floorColor.apply(cell).ifPresent(color -> {
+                    processor.setColor(color);
+                    processor.fillPolygon(new Polygon(new int[]{cellStart(pos.getX()), cellEnd(pos.getX()) + 1, cellEnd(
+                            pos.getX()) + 1, cellStart(pos.getX()),},
+                            new int[]{cellStart(pos.getY()), cellStart(pos.getY()), cellEnd(pos.getY()) + 1, cellEnd(pos
+                                    .getY()) + 1,},
+                            4));
+                });
             }
         }
+    }
+
+    static void paintHeap(ImageProcessor processor, Maze maze, Predicate<Maze.Cell> inHeap) {
+        paintFloor(
+                processor,
+                maze,
+                cell -> inHeap.test(cell) ? Optional.<Color>of(new Color(colorHeap)) : Optional.empty());
     }
 
     static void paintWalls(ImageProcessor processor, Maze maze, int startX, int exitX) {
@@ -135,39 +130,42 @@ public class MazeRendererCore {
                 final var cell = maze.at(new Position(x, y)).orElseThrow();
                 if (cell.isWallTop()) {
                     if (y != 0 || x != startX) {
-                        processor.drawLine(
-                                cellStart(x),
-                                cellStart(y),
-                                cellEnd(x),
-                                cellStart(y)
-                        );
+                        processor.drawLine(cellStart(x), cellStart(y), cellEnd(x), cellStart(y));
                     }
                 }
                 if (cell.isWallLeft()) {
-                    processor.drawLine(
-                            cellStart(x),
-                            cellStart(y),
-                            cellStart(x),
-                            cellEnd(y)
-                    );
+                    processor.drawLine(cellStart(x), cellStart(y), cellStart(x), cellEnd(y));
                 }
                 if (y == height - 1 && cell.isWallBottom()) {
                     if (x != exitX) {
-                        processor.drawLine(
-                                cellStart(x),
-                                cellEnd(y),
-                                cellEnd(x),
-                                cellEnd(y)
-                        );
+                        processor.drawLine(cellStart(x), cellEnd(y), cellEnd(x), cellEnd(y));
                     }
                 }
                 if (x == width - 1 && cell.isWallRight()) {
-                    processor.drawLine(
-                            cellEnd(x),
-                            cellStart(y),
-                            cellEnd(x),
-                            cellEnd(y)
-                    );
+                    processor.drawLine(cellEnd(x), cellStart(y), cellEnd(x), cellEnd(y));
+                }
+            }
+        }
+    }
+
+    public static void paintWalls(ImageProcessor processor, Maze maze) {
+        processor.setColor(colorWall);
+        final var width = maze.getWidth();
+        final var height = maze.getHeight();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                final var cell = maze.at(new Position(x, y)).orElseThrow();
+                if (cell.isWallTop()) {
+                    processor.drawLine(cellStart(x), cellStart(y), cellEnd(x), cellStart(y));
+                }
+                if (cell.isWallLeft()) {
+                    processor.drawLine(cellStart(x), cellStart(y), cellStart(x), cellEnd(y));
+                }
+                if (y == height - 1 && cell.isWallBottom()) {
+                    processor.drawLine(cellStart(x), cellEnd(y), cellEnd(x), cellEnd(y));
+                }
+                if (x == width - 1 && cell.isWallRight()) {
+                    processor.drawLine(cellEnd(x), cellStart(y), cellEnd(x), cellEnd(y));
                 }
             }
         }

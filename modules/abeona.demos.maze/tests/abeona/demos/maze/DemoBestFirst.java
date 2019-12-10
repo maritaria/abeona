@@ -24,7 +24,7 @@ public class DemoBestFirst extends DemoBase {
                     var leading = cost.getTraceCost(state).orElse(0);
                     var remaining = heuristic.applyAsDouble(state);
                     return leading + remaining;
-                })
+                }).reversed()
                 .thenComparingInt(state -> state.getLocation().getPos().getX())
                 .thenComparingInt(state -> state.getLocation().getPos().getY());
         final var frontier = TreeMapFrontier.withExactOrdering(comp);

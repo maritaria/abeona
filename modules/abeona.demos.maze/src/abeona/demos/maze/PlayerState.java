@@ -4,22 +4,19 @@ import abeona.State;
 import abeona.Transition;
 import abeona.util.Arguments;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class PlayerState implements State {
     private final Maze.Cell location;
 
-    PlayerState(Maze.Cell location) {
+    public PlayerState(Maze.Cell location) {
         Arguments.requireNonNull(location, "location");
         this.location = location;
     }
 
-    Maze.Cell getLocation() {
+    public Maze.Cell getLocation() {
         return location;
     }
 
@@ -43,49 +40,49 @@ public class PlayerState implements State {
     }
 
     public Stream<Transition<PlayerState>> next() {
-        final var iterator = new NextIterator(location);
+        final var iterator = new NextIterator(this);
         final int characteristics = Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.DISTINCT;
         final var spliterator = Spliterators.spliteratorUnknownSize(iterator, characteristics);
-        return StreamSupport.stream(spliterator, false)
-                .map(next -> new Transition<>(this, next));
+        return StreamSupport.stream(spliterator, false).map(next -> new Transition<>(this, next));
     }
 
     static class NextIterator implements Iterator<PlayerState> {
-        private final Maze.Cell source;
+        private final PlayerState source;
         private Phase phase = Phase.Left;
         private PlayerState prepared = null;
 
-        NextIterator(Maze.Cell cell) {
-            Arguments.requireNonNull(cell, "cell");
-            this.source = cell;
+        NextIterator(PlayerState source) {
+            Arguments.requireNonNull(source, "source");
+            this.source = source;
         }
 
         @Override
         public boolean hasNext() {
+            final var cell = source.getLocation();
             if (prepared == null) {
                 switch (phase) {
                     case Left:
                         phase = Phase.Right;
-                        if (!source.isWallLeft()) {
-                            prepared = new PlayerState(source.getLeft().orElseThrow());
+                        if (!cell.isWallLeft()) {
+                            prepared = new PlayerState(cell.getLeft().orElseThrow());
                             break;
                         }
                     case Right:
                         phase = Phase.Up;
-                        if (!source.isWallRight()) {
-                            prepared = new PlayerState(source.getRight().orElseThrow());
+                        if (!cell.isWallRight()) {
+                            prepared = new PlayerState(cell.getRight().orElseThrow());
                             break;
                         }
                     case Up:
                         phase = Phase.Down;
-                        if (!source.isWallTop()) {
-                            prepared = new PlayerState(source.getTop().orElseThrow());
+                        if (!cell.isWallTop()) {
+                            prepared = new PlayerState(cell.getTop().orElseThrow());
                             break;
                         }
                     case Down:
                         phase = Phase.Done;
-                        if (!source.isWallBottom()) {
-                            prepared = new PlayerState(source.getBottom().orElseThrow());
+                        if (!cell.isWallBottom()) {
+                            prepared = new PlayerState(cell.getBottom().orElseThrow());
                             break;
                         }
                     case Done:

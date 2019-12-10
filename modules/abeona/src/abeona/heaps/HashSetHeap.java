@@ -1,20 +1,16 @@
 package abeona.heaps;
 
 import abeona.State;
-import abeona.util.Arguments;
-import abeona.util.MappingIterator;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.function.ToIntFunction;
 
 /**
  * Implements a {@link HashSet} based heap.
  * All operations are funneled into a hashset.
  * The {@link StateType} is expected to override {@link Object#hashCode()} and {@link Object#equals(Object)} properly.
+ *
  * @param <StateType>
  */
 public class HashSetHeap<StateType extends State> implements ManagedHeap<StateType> {
@@ -43,5 +39,10 @@ public class HashSetHeap<StateType extends State> implements ManagedHeap<StateTy
     @Override
     public boolean contains(StateType state) {
         return states.contains(state);
+    }
+
+    @Override
+    public long size() {
+        return states.size();
     }
 }

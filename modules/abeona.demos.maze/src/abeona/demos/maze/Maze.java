@@ -2,9 +2,13 @@ package abeona.demos.maze;
 
 import abeona.util.Arguments;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public final class Maze {
     private final int width, height;
@@ -38,7 +42,7 @@ public final class Maze {
         return height;
     }
 
-    Optional<Cell> at(Position pos) {
+    public Optional<Cell> at(Position pos) {
         Arguments.requireNonNull(pos, "pos");
         final int x = pos.getX();
         final int y = pos.getY();
@@ -87,7 +91,7 @@ public final class Maze {
         }
     }
 
-    class Cell {
+    public class Cell {
         private final Position pos;
         private boolean wallLeft = false, wallTop = false;
 
@@ -96,59 +100,59 @@ public final class Maze {
             this.pos = pos;
         }
 
-        Maze getMaze() {
+        public Maze getMaze() {
             return Maze.this;
         }
 
-        Position getPos() {
+        public Position getPos() {
             return pos;
         }
 
-        boolean isWallLeft() {
+        public boolean isWallLeft() {
             return wallLeft;
         }
 
-        void setWallLeft(boolean wallLeft) {
+        public void setWallLeft(boolean wallLeft) {
             this.wallLeft = wallLeft;
         }
 
-        boolean isWallRight() {
+        public boolean isWallRight() {
             return getRight().map(Cell::isWallLeft).orElse(true);
         }
 
-        void setWallRight(boolean wallRight) {
+        public void setWallRight(boolean wallRight) {
             getRight().ifPresent(c -> c.setWallLeft(wallRight));
         }
 
-        boolean isWallTop() {
+        public boolean isWallTop() {
             return wallTop;
         }
 
-        void setWallTop(boolean wallTop) {
+        public void setWallTop(boolean wallTop) {
             this.wallTop = wallTop;
         }
 
-        boolean isWallBottom() {
+        public boolean isWallBottom() {
             return getBottom().map(Cell::isWallTop).orElse(true);
         }
 
-        void setWallBottom(boolean wallDown) {
+        public void setWallBottom(boolean wallDown) {
             getBottom().ifPresent(c -> c.setWallTop(wallDown));
         }
 
-        Optional<Cell> getLeft() {
+        public Optional<Cell> getLeft() {
             return Maze.this.at(pos.add(-1, 0));
         }
 
-        Optional<Cell> getRight() {
+        public Optional<Cell> getRight() {
             return Maze.this.at(pos.add(1, 0));
         }
 
-        Optional<Cell> getTop() {
+        public Optional<Cell> getTop() {
             return Maze.this.at(pos.add(0, -1));
         }
 
-        Optional<Cell> getBottom() {
+        public Optional<Cell> getBottom() {
             return Maze.this.at(pos.add(0, 1));
         }
 
@@ -164,12 +168,12 @@ public final class Maze {
         }
 
         @Override
-        boolean isWallTop() {
+        public boolean isWallTop() {
             return true;
         }
 
         @Override
-        void setWallTop(boolean wallTop) {
+        public void setWallTop(boolean wallTop) {
         }
     }
 
@@ -179,12 +183,12 @@ public final class Maze {
         }
 
         @Override
-        boolean isWallLeft() {
+        public boolean isWallLeft() {
             return true;
         }
 
         @Override
-        void setWallLeft(boolean wallLeft) {
+        public void setWallLeft(boolean wallLeft) {
         }
     }
 
@@ -194,12 +198,12 @@ public final class Maze {
         }
 
         @Override
-        boolean isWallLeft() {
+        public boolean isWallLeft() {
             return true;
         }
 
         @Override
-        void setWallLeft(boolean wallLeft) {
+        public void setWallLeft(boolean wallLeft) {
         }
     }
 }

@@ -19,7 +19,7 @@ public class MazeGenerator {
         return source.remove(random.nextInt(source.size()));
     }
 
-    Maze createMazeDfs(int width, int height) {
+    public Maze createMazeDfs(int width, int height) {
         final var result = new Maze(width, height);
         result.builder().close();
         final Set<Maze.Cell> visited = new HashSet<>(width * height);
@@ -28,24 +28,19 @@ public class MazeGenerator {
         while (!frontier.isEmpty()) {
             final var current = frontier.pop();
             final var available = new ArrayList<AvailablePair>(4);
-            final Predicate<? super Maze.Cell> isUnknown = Predicate.not(visited::contains).and(Predicate.not(frontier::contains));
+            final Predicate<? super Maze.Cell> isUnknown = Predicate.not(visited::contains)
+                    .and(Predicate.not(frontier::contains));
             if (current.isWallLeft()) {
-                current.getLeft()
-                        .filter(isUnknown)
-                        .map(c -> new AvailablePair(c, Maze.Cell::setWallLeft))
-                        .ifPresent(available::add);
+                current.getLeft().filter(isUnknown).map(c -> new AvailablePair(c, Maze.Cell::setWallLeft)).ifPresent(
+                        available::add);
             }
             if (current.isWallRight()) {
-                current.getRight()
-                        .filter(isUnknown)
-                        .map(c -> new AvailablePair(c, Maze.Cell::setWallRight))
-                        .ifPresent(available::add);
+                current.getRight().filter(isUnknown).map(c -> new AvailablePair(c, Maze.Cell::setWallRight)).ifPresent(
+                        available::add);
             }
             if (current.isWallTop()) {
-                current.getTop()
-                        .filter(isUnknown)
-                        .map(c -> new AvailablePair(c, Maze.Cell::setWallTop))
-                        .ifPresent(available::add);
+                current.getTop().filter(isUnknown).map(c -> new AvailablePair(c, Maze.Cell::setWallTop)).ifPresent(
+                        available::add);
             }
             if (current.isWallBottom()) {
                 current.getBottom()
@@ -74,7 +69,7 @@ public class MazeGenerator {
         return result;
     }
 
-    Maze createMazePrim(int width, int height) {
+    public Maze createMazePrim(int width, int height) {
         final var result = new Maze(width, height);
         result.builder().close();
         final Set<Maze.Cell> visited = new HashSet<>(width * height);
@@ -85,28 +80,24 @@ public class MazeGenerator {
             visited.add(current);
             final var available = new ArrayList<AvailablePair>(4);
             if (current.isWallLeft()) {
-                current.getLeft()
-                        .filter(Predicate.not(visited::contains))
-                        .map(c -> new AvailablePair(c, Maze.Cell::setWallLeft))
-                        .ifPresent(available::add);
+                current.getLeft().filter(Predicate.not(visited::contains)).map(c -> new AvailablePair(
+                        c,
+                        Maze.Cell::setWallLeft)).ifPresent(available::add);
             }
             if (current.isWallRight()) {
-                current.getRight()
-                        .filter(Predicate.not(visited::contains))
-                        .map(c -> new AvailablePair(c, Maze.Cell::setWallRight))
-                        .ifPresent(available::add);
+                current.getRight().filter(Predicate.not(visited::contains)).map(c -> new AvailablePair(
+                        c,
+                        Maze.Cell::setWallRight)).ifPresent(available::add);
             }
             if (current.isWallTop()) {
-                current.getTop()
-                        .filter(Predicate.not(visited::contains))
-                        .map(c -> new AvailablePair(c, Maze.Cell::setWallTop))
-                        .ifPresent(available::add);
+                current.getTop().filter(Predicate.not(visited::contains)).map(c -> new AvailablePair(
+                        c,
+                        Maze.Cell::setWallTop)).ifPresent(available::add);
             }
             if (current.isWallBottom()) {
-                current.getBottom()
-                        .filter(Predicate.not(visited::contains))
-                        .map(c -> new AvailablePair(c, Maze.Cell::setWallBottom))
-                        .ifPresent(available::add);
+                current.getBottom().filter(Predicate.not(visited::contains)).map(c -> new AvailablePair(
+                        c,
+                        Maze.Cell::setWallBottom)).ifPresent(available::add);
             }
 
             if (!available.isEmpty()) {
@@ -132,21 +123,34 @@ public class MazeGenerator {
         }
     }
 
-    Maze createMazeSubdiv(int width, int height) {
+    public Maze createMazeSubdiv(int width, int height) {
         final var maze = new Maze(width, height);
         maze.builder().open();
-        subdivide(maze, 0, 0, width, height,
+        subdivide(maze,
+                0,
+                0,
+                width,
+                height,
                 pos -> maze.at(pos).orElseThrow().setWallLeft(true),
-                pos -> maze.at(new Position(pos.getY(), pos.getX())).orElseThrow().setWallTop(true)
-        );
+                pos -> maze.at(new Position(pos.getY(), pos.getX())).orElseThrow().setWallTop(true));
         return maze;
     }
 
-    private void subdivide(Maze maze, int startX, int startY, int width, int height, Consumer<Position> applyX, Consumer<Position> applyY) {
+    private void subdivide(
+            Maze maze,
+            int startX,
+            int startY,
+            int width,
+            int height,
+            Consumer<Position> applyX,
+            Consumer<Position> applyY
+    ) {
         if (width < height) {
             subdivide(maze, startY, startX, height, width, applyY, applyX);
         } else {
-            if (width <= 1 || height <= 1) return;
+            if (width <= 1 || height <= 1) {
+                return;
+            }
             int halfwayX = 1 + random.nextInt(width - 1);
             int openingY = startY + random.nextInt(height);
             for (int y = startY; y < (startY + height); y++) {

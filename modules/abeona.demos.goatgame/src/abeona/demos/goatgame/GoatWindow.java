@@ -1,6 +1,7 @@
 package abeona.demos.goatgame;
 
 import abeona.Query;
+import abeona.TerminationType;
 import abeona.behaviours.AbstractBehaviour;
 import abeona.frontiers.ManagedFrontier;
 
@@ -20,6 +21,7 @@ class GoatWindow extends JFrame implements ActionListener {
     private final StateListView discoveriesView = new StateListView("Discoveries");
     private final JButton resetButton = new JButton("Reset");
     private final JButton nextButton = new JButton("Next");
+    private final JLabel terminationLabel = new JLabel();
     private Query<GameState> query = null;
 
     GoatWindow() {
@@ -41,6 +43,7 @@ class GoatWindow extends JFrame implements ActionListener {
         buttonPanel.add(resetButton);
         nextButton.addActionListener(this);
         buttonPanel.add(nextButton);
+        buttonPanel.add(terminationLabel);
         add(buttonPanel, BorderLayout.SOUTH);
         onReset();
     }
@@ -55,25 +58,21 @@ class GoatWindow extends JFrame implements ActionListener {
     }
 
     private void onReset() {
-        query = Program.createQuery();
+        query = GoatProgram.createQuery();
         final var frontier = query.getFrontier() instanceof ManagedFrontier ? (ManagedFrontier<GameState>) query.getFrontier() : null;
         query.getFrontier().add(Stream.of(new GameState()));
         query.addBehaviour(new AbstractBehaviour<>() {
             @Override
             public void attach(Query<GameState> query) {
-                tapQueryBehaviour(query, query.beforeStatePicked, unused -> {
-                    if (frontier != null) {
+                if (frontier != null) {
+                    tapQueryBehaviour(query, query.beforeStatePicked, unused -> {
                         frontierBeforeView.setStates(frontier);
-                    }
-                });
-                tapQueryBehaviour(query, query.afterStateEvaluation, unused -> {
-                    if (frontier != null) {
+
+                    });
+                    tapQueryBehaviour(query, query.afterStateEvaluation, unused -> {
                         frontierAfterView.setStates(frontier);
-                        nextButton.setEnabled(frontier.hasNext());
-                    } else {
-                        nextButton.setEnabled(true);
-                    }
-                });
+                    });
+                }
                 tapQueryBehaviour(query, query.afterStatePicked, stateEvent -> {
                     nextStateView.setStates(Collections.singleton(stateEvent.getState()));
                     neighboursView.clearStates();
@@ -88,17 +87,26 @@ class GoatWindow extends JFrame implements ActionListener {
             }
         });
         frontierBeforeView.setStates(frontier);
-        if (frontier != null) {
-            nextButton.setEnabled(frontier.hasNext());
-        }
         nextStateView.clearStates();
         neighboursView.clearStates();
         discoveriesView.clearStates();
+        nextButton.setEnabled(true);
+        terminationLabel.setVisible(false);
         validate();
         repaint();
     }
 
     private void onNext() {
-        query.exploreNext();
+        final var termination = query.exploreNext();
+        termination.ifPresentOrElse(type -> {
+            terminationLabel.setText("Exploration terminated: " + type.toString());
+            terminationLabel.setVisible(true);
+            if (type != TerminationType.ManualTermination) {
+                nextButton.setEnabled(false);
+            }
+        }, () -> {
+            terminationLabel.setVisible(false);
+            nextButton.setEnabled(true);
+        });
     }
 }
