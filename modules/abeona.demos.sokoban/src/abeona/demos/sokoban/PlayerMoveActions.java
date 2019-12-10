@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static abeona.demos.sokoban.Helpers.*;
+
 public class PlayerMoveActions {
     static List<GameAction> actions = Arrays.asList(
             new MoveLeft(),
@@ -23,22 +25,6 @@ public class PlayerMoveActions {
                 .filter(gameAction -> gameAction.canPerform(state))
                 .flatMap(gameAction -> gameAction.resultingStates(state))
                 .map(nextState -> new Transition<>(state, nextState));
-    }
-
-    static Position leftOf(Position pos) {
-        return new Position(pos.getX() - 1, pos.getY());
-    }
-
-    static Position rightOf(Position pos) {
-        return new Position(pos.getX() + 1, pos.getY());
-    }
-
-    static Position above(Position pos) {
-        return new Position(pos.getX(), pos.getY() - 1);
-    }
-
-    static Position below(Position pos) {
-        return new Position(pos.getX(), pos.getY() + 1);
     }
 
     abstract static class Move implements GameAction {

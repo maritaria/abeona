@@ -58,7 +58,8 @@ public class GraphView extends JPanel {
                 g2.setColor(gridColor);
                 g2.drawLine(padding + labelPadding + 1 + pointWidth, y, width - padding, y);
                 g2.setColor(Color.BLACK);
-                final String yLabel = ((int) ((minScore + scoreRange * ((i * 1.0) / numberYDivisions)) * 100)) / 100.0 + "";
+                final int tickValue = (int) (minScore + ((scoreRange * i) / numberYDivisions));
+                final String yLabel = tickValue + "";
                 final int labelWidth = fontMetrics.stringWidth(yLabel);
                 g2.drawString(yLabel, x1 - labelWidth - 5, y + (fontHeight / 2) - 3);
             }
@@ -99,10 +100,14 @@ public class GraphView extends JPanel {
         final double yScale = ((double) height - 2 * padding - labelPadding) / scoreRange;
 
         final List<Point> graphPoints = new ArrayList<>(length);
+        int previousPointX = -10;
         for (int i = 0; i < length; i++) {
             final int x1 = (int) (i * xScale + padding + labelPadding);
             final int y1 = (int) ((maxScore - scores.get(i)) * yScale + padding);
-            graphPoints.add(new Point(x1, y1));
+            if (x1 > (previousPointX + pointWidth)) {
+                graphPoints.add(new Point(x1, y1));
+                previousPointX = x1;
+            }
         }
 
         for (int i = 0; i < graphPoints.size() - 1; i++) {
@@ -113,12 +118,15 @@ public class GraphView extends JPanel {
             g2.drawLine(x1, y1, x2, y2);
         }
 
-        g2.setStroke(oldStroke);
-        g2.setColor(pointColor);
-        for (Point graphPoint : graphPoints) {
-            final int x = graphPoint.x - pointWidth / 2;
-            final int y = graphPoint.y - pointWidth / 2;
-            g2.fillOval(x, y, pointWidth, pointWidth);
+        boolean drawDots = width > (length * pointWidth);
+        if (drawDots) {
+            g2.setStroke(oldStroke);
+            g2.setColor(pointColor);
+            for (Point graphPoint : graphPoints) {
+                final int x = graphPoint.x - pointWidth / 2;
+                final int y = graphPoint.y - pointWidth / 2;
+                g2.fillOval(x, y, pointWidth, pointWidth);
+            }
         }
     }
 

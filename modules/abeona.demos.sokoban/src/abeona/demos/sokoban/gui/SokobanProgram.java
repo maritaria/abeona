@@ -2,16 +2,14 @@ package abeona.demos.sokoban.gui;
 
 import abeona.NextFunction;
 import abeona.Query;
+import abeona.behaviours.FrontierFilterBehaviour;
 import abeona.behaviours.SweepLineBehaviour;
 import abeona.behaviours.TerminateOnGoalStateBehaviour;
-import abeona.demos.sokoban.PlayerMoveActions;
-import abeona.demos.sokoban.Position;
-import abeona.demos.sokoban.SokobanLevel;
-import abeona.demos.sokoban.SokobanState;
+import abeona.demos.sokoban.*;
 import abeona.frontiers.QueueFrontier;
-import abeona.frontiers.TreeMapFrontier;
 import abeona.heaps.HashSetHeap;
 
+import javax.swing.*;
 import java.util.Comparator;
 import java.util.HashSet;
 
@@ -31,6 +29,7 @@ public class SokobanProgram {
         query.addBehaviour(new TerminateOnGoalStateBehaviour<>(SokobanState::isSolved));
 
         query.addBehaviour(new SweepLineBehaviour<SokobanState>(progressComparator(initialState)));
+        query.addBehaviour(new FrontierFilterBehaviour<>(Helpers::isSolvable));
 
         return query;
     }

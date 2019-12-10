@@ -45,6 +45,7 @@ public class SokobanSimulator extends JFrame implements ActionListener, ItemList
         setResizable(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         final var content = new JPanel();
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
         content.add(stepPanel);
@@ -129,8 +130,11 @@ public class SokobanSimulator extends JFrame implements ActionListener, ItemList
         final var level = initialState.getLevel();
         final var width = level.getWidth();
         final var height = level.getHeight();
-        final var openSpots = IntStream.range(0, width).mapToObj(x -> IntStream.range(0, height)
-                .mapToObj(y -> new Position(x, y))).flatMap(Function.identity()).filter(level::isWall).count();
+        final var openSpots = IntStream.range(0, width)
+                .mapToObj(x -> IntStream.range(0, height).mapToObj(y -> new Position(x, y)))
+                .flatMap(Function.identity())
+                .filter(level::isWall)
+                .count();
         final var boxes = initialState.getBoxes().size();
         final var movableEntities = boxes + 1;
         var mutations = 1;
