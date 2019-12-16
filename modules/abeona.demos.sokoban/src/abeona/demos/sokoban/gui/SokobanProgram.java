@@ -39,15 +39,6 @@ public class SokobanProgram {
         return query;
     }
 
-    private static Comparator<SokobanState> progressComparator(SokobanState initialState) {
-        final var level = initialState.getLevel();
-        return Comparator.comparingInt(state -> (int) state.getBoxes().stream().filter(level::isButton).count());
-    }
-
-    private static Comparator<SokobanState> progressComparatorWithoutCollisions(SokobanState initialState) {
-        return progressComparator(initialState).thenComparing(SokobanState.nonCollidingComparator());
-    }
-
     static SokobanState createInitialState() {
         return LevelReader.readLevel("level-5.txt");
     }

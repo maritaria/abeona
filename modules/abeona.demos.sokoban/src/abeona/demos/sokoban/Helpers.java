@@ -1,5 +1,7 @@
 package abeona.demos.sokoban;
 
+import java.util.Comparator;
+
 public class Helpers {
     static Position leftOf(Position pos) {
         return new Position(pos.getX() - 1, pos.getY());
@@ -53,5 +55,14 @@ public class Helpers {
         final boolean wallLeft = level.isWall(leftOf(pos));
         final boolean wallRight = level.isWall(rightOf(pos));
         return (wallUp || wallDown) && (wallLeft || wallRight);
+    }
+
+    public static Comparator<SokobanState> progressComparator(SokobanState initialState) {
+        final var level = initialState.getLevel();
+        return Comparator.comparingInt(state -> (int) state.getBoxes().stream().filter(level::isButton).count());
+    }
+
+    public static Comparator<SokobanState> progressComparatorWithoutCollisions(SokobanState initialState) {
+        return progressComparator(initialState).thenComparing(SokobanState.nonCollidingComparator());
     }
 }
