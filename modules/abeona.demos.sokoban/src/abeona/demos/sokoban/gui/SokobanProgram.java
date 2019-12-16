@@ -10,7 +10,6 @@ import abeona.frontiers.QueueFrontier;
 import abeona.heaps.HashSetHeap;
 
 import javax.swing.*;
-import java.util.Comparator;
 
 public class SokobanProgram {
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
