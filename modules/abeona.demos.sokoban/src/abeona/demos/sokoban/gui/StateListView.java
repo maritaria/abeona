@@ -17,7 +17,7 @@ class StateListView extends JPanel {
         }
         stack.setLayout(new BoxLayout(stack, BoxLayout.Y_AXIS));
         scroll = new JScrollPane(stack);
-        scroll.setPreferredSize(new Dimension(300, 500));
+        scroll.setPreferredSize(new Dimension(200, 500));
         add(scroll);
     }
 

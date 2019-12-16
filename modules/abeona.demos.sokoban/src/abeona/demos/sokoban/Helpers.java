@@ -65,4 +65,49 @@ public class Helpers {
     public static Comparator<SokobanState> progressComparatorWithoutCollisions(SokobanState initialState) {
         return progressComparator(initialState).thenComparing(SokobanState.nonCollidingComparator());
     }
+
+    public static boolean advancedBlockingCheck(SokobanState state) {
+        final var level = state.getLevel();
+        return state.getBoxes().stream().anyMatch(box -> {
+            final var above = above(box);
+            final var below = below(box);
+            final var leftOf = leftOf(box);
+            final var rightOf = rightOf(box);
+            final var topLeft = leftOf(above);
+            final var topRight = rightOf(above);
+            final var bottomLeft = leftOf(below);
+            final var bottomRight = rightOf(below);
+            if (level.isWall(leftOf) || level.isWall(rightOf)) {
+                if (level.isWall(above) || level.isWall(below)) {
+                    return true;
+                }
+                if (state.isBox(above)) {
+                    if (level.isWall(topLeft) || level.isWall(topRight)) {
+                        return true;
+                    }
+                }
+                if (state.isBox(below)) {
+                    if (level.isWall(bottomLeft) || level.isWall(bottomRight)) {
+                        return true;
+                    }
+                }
+            }
+            if (level.isWall(above) || level.isWall(below)) {
+                if (level.isWall(leftOf) || level.isWall(rightOf)) {
+                    return true;
+                }
+                if (state.isBox(leftOf)) {
+                    if (level.isWall(topLeft) || level.isWall(bottomLeft)) {
+                        return true;
+                    }
+                }
+                if (state.isBox(rightOf)) {
+                    if (level.isWall(topRight) || level.isWall(bottomRight)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
+    }
 }
