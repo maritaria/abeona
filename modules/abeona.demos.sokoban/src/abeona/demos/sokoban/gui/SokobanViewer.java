@@ -7,14 +7,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class SokobanViewer extends JPanel {
+class SokobanViewer extends JPanel {
     private final Point imageSize = new Point(32, 32);
 
-    public SokobanViewer() {
+    public SokobanViewer(SokobanState state) {
         setLayout(null);
-    }
-
-    public void showSokoban(SokobanState state) {
         // Clear existing stuff
         removeAll();
         // Setup rendering

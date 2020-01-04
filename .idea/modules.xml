@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/modules/abeona/abeona.iml" filepath="$PROJECT_DIR$/modules/abeona/abeona.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/abeona.challenges.robot/abeona.challenges.robot.iml" filepath="$PROJECT_DIR$/modules/abeona.challenges.robot/abeona.challenges.robot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.common/abeona.demos.common.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.common/abeona.demos.common.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.goatgame/abeona.demos.goatgame.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.goatgame/abeona.demos.goatgame.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.knapsack/abeona.demos.knapsack.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.knapsack/abeona.demos.knapsack.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.maze/abeona.demos.maze.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.maze/abeona.demos.maze.iml" />

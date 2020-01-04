@@ -3,6 +3,7 @@ package abeona.demos.sokoban.gui;
 import abeona.Query;
 import abeona.TerminationType;
 import abeona.behaviours.AbstractBehaviour;
+import abeona.demo.common.QueryView;
 import abeona.demos.sokoban.Position;
 import abeona.demos.sokoban.SokobanState;
 import abeona.frontiers.ManagedFrontier;
@@ -24,7 +25,7 @@ import static abeona.demos.sokoban.gui.SokobanProgram.createInitialState;
 import static abeona.demos.sokoban.gui.SokobanProgram.createQuery;
 
 public class SokobanSimulator extends JFrame implements ActionListener, ItemListener {
-    private final StepPanel stepPanel = new StepPanel();
+    private final QueryView<SokobanState> queryView = new QueryView<>(SokobanViewer::new);
     private final GraphView frontierGraph = new GraphView();
     private final GraphView heapGraph = new GraphView();
     private final JButton resetButton = new JButton("Reset");
@@ -49,7 +50,7 @@ public class SokobanSimulator extends JFrame implements ActionListener, ItemList
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         final var content = new JPanel();
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
-        content.add(stepPanel);
+        content.add(queryView);
         final var buttonBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         resetButton.addActionListener(this);
         buttonBar.add(resetButton);
@@ -121,7 +122,7 @@ public class SokobanSimulator extends JFrame implements ActionListener, ItemList
         });
         frontierGraph.setValues(Collections.emptyList());
         heapGraph.setValues(Collections.emptyList());
-        stepPanel.setQuery(query);
+        queryView.setQuery(query);
         updateEstimateSize();
         nextButton.setEnabled(true);
         nextTenButton.setEnabled(true);
@@ -197,9 +198,9 @@ public class SokobanSimulator extends JFrame implements ActionListener, ItemList
 
     private void onShowFrontiersChanged(ItemEvent itemEvent) {
         if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-            stepPanel.setFrontiersEnabled(true);
+            queryView.setFrontiersEnabled(true);
         } else {
-            stepPanel.setFrontiersEnabled(false);
+            queryView.setFrontiersEnabled(false);
 
         }
     }

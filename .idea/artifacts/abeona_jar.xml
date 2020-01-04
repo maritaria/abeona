@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="abeona:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/abeona_jar</output-path>
+    <root id="archive" name="abeona.jar">
+      <element id="module-output" name="abeona" />
+    </root>
+  </artifact>
+</component>

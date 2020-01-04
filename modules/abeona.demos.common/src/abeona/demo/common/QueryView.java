@@ -1,45 +1,53 @@
-package abeona.demos.sokoban.gui;
+package abeona.demo.common;
 
 import abeona.Query;
+import abeona.State;
 import abeona.behaviours.AbstractBehaviour;
 import abeona.behaviours.SweepLineBehaviour;
-import abeona.demos.sokoban.SokobanState;
 import abeona.frontiers.ManagedFrontier;
 import abeona.heaps.ManagedHeap;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Collections;
+import java.util.function.Function;
 
-public class StepPanel extends JPanel {
-    private final StateListView frontierBeforeView = new StateListView("Frontier before");
-    private final StateListView nextStateView = new StateListView("Picked state");
-    private final StateListView neighboursView = new StateListView("Neighbours");
-    private final StateListView discoveriesView = new StateListView("Discoveries");
-    private final StateListView frontierAfterView = new StateListView("Frontier after");
-    private final StateListView purgedView = new StateListView("Purged");
-    private final StateListView heapView = new StateListView("Heap");
+public class QueryView<StateType extends State> extends JPanel {
+    private final StateListView<StateType> frontierBeforeView;
+    private final StateListView<StateType> nextStateView;
+    private final StateListView<StateType> neighboursView;
+    private final StateListView<StateType> discoveriesView;
+    private final StateListView<StateType> frontierAfterView;
+    private final StateListView<StateType> purgedView;
+    private final StateListView<StateType> heapView;
     private boolean frontiersEnabled = true;
 
-    public StepPanel() {
+    public QueryView(Function<StateType, JPanel> viewCreator) {
+        this.frontierBeforeView = new StateListView<StateType>("Frontier (before)", viewCreator);
+        this.nextStateView = new StateListView<>("Picked state", viewCreator);
+        this.neighboursView = new StateListView<>("Neighbours", viewCreator);
+        this.discoveriesView = new StateListView<>("Discoveries", viewCreator);
+        this.frontierAfterView = new StateListView<>("Frontier (after)", viewCreator);
+        this.purgedView = new StateListView<>("Purged", viewCreator);
+        this.heapView = new StateListView<>("Heap (after)", viewCreator);
         setLayout(new GridLayout(1, 10));
         add(frontierBeforeView);
         add(nextStateView);
-        add(purgedView);
-        // add(neighboursView);
+        add(neighboursView);
         add(discoveriesView);
         add(frontierAfterView);
-        // add(heapView);
     }
 
-    void setQuery(Query<SokobanState> query) {
-        final var frontier = query.getFrontier() instanceof ManagedFrontier ? (ManagedFrontier<SokobanState>) query.getFrontier() : null;
-        final var heap = query.getHeap() instanceof ManagedHeap ? (ManagedHeap<SokobanState>) query.getHeap() : null;
+    public void setQuery(Query<StateType> query) {
+        final var frontier = query.getFrontier() instanceof ManagedFrontier ? (ManagedFrontier<StateType>) query.getFrontier() : null;
+        final var heap = query.getHeap() instanceof ManagedHeap ? (ManagedHeap<StateType>) query.getHeap() : null;
         query.addBehaviour(new AbstractBehaviour<>() {
             @SuppressWarnings("unchecked")
             @Override
-            public void attach(Query<SokobanState> query) {
+            public void attach(Query<StateType> query) {
                 if (frontier != null) {
+                    add(frontierBeforeView, 0);
+                    add(frontierAfterView, getComponentZOrder(discoveriesView) + 1);
                     tapQueryBehaviour(query, query.beforeStatePicked, unused -> {
                         if (frontiersEnabled) {
                             frontierBeforeView.setStates(frontier);
@@ -51,6 +59,9 @@ public class StepPanel extends JPanel {
                             frontierAfterView.setStates(frontier);
                         }
                     });
+                } else {
+                    remove(frontierBeforeView);
+                    remove(frontierAfterView);
                 }
                 if (heap != null) {
                     add(heapView, getComponentZOrder(frontierAfterView) + 1);
@@ -64,6 +75,7 @@ public class StepPanel extends JPanel {
                 }
                 tapQueryBehaviour(query, query.afterStatePicked, stateEvent -> {
                     nextStateView.setStates(Collections.singleton(stateEvent.getState()));
+                    frontierBeforeView.highlightState(stateEvent.getState(), Color.red);
                     neighboursView.clearStates();
                     discoveriesView.clearStates();
                 });
@@ -71,11 +83,12 @@ public class StepPanel extends JPanel {
                     neighboursView.addState(evaluation.getTransition().getTargetState());
                 });
                 tapQueryBehaviour(query, query.onStateDiscovery, discovery -> {
+                    neighboursView.highlightState(discovery.getTransition().getTargetState(), Color.green);
                     discoveriesView.addState(discovery.getTransition().getTargetState());
                 });
                 query.getBehaviours(SweepLineBehaviour.class).findFirst().ifPresentOrElse(behaviour -> {
-                    add(purgedView, StepPanel.this.getComponentZOrder(nextStateView) + 1);
-                    final var sweepLine = (SweepLineBehaviour<SokobanState>) behaviour;
+                    add(purgedView, QueryView.this.getComponentZOrder(nextStateView) + 1);
+                    final var sweepLine = (SweepLineBehaviour<StateType>) behaviour;
                     tapForeignBehaviour(sweepLine.onPurge, purge -> {
                         purgedView.addState(purge.getState());
                     });
