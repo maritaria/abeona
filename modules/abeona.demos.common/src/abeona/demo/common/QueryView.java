@@ -1,7 +1,6 @@
 package abeona.demo.common;
 
 import abeona.Query;
-import abeona.State;
 import abeona.behaviours.AbstractBehaviour;
 import abeona.behaviours.SweepLineBehaviour;
 import abeona.frontiers.ManagedFrontier;
@@ -12,7 +11,7 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.function.Function;
 
-public class QueryView<StateType extends State> extends JPanel {
+public class QueryView<StateType> extends JPanel {
     private final StateListView<StateType> frontierBeforeView;
     private final StateListView<StateType> nextStateView;
     private final StateListView<StateType> neighboursView;

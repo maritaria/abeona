@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class QueryTest {
-    private static final class MyState implements State {
+    private static final class MyState {
         private final int hash;
 
         MyState(final int hash) {

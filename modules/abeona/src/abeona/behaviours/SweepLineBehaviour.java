@@ -1,7 +1,6 @@
 package abeona.behaviours;
 
 import abeona.Query;
-import abeona.State;
 import abeona.StateEvent;
 import abeona.TransitionEvaluationEvent;
 import abeona.aspects.EventTap;
@@ -24,7 +23,7 @@ import java.util.function.Consumer;
  *
  * @param <StateType>
  */
-public final class SweepLineBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
+public final class SweepLineBehaviour<StateType> extends AbstractBehaviour<StateType> {
     private final static Object PERSIST = new Object();
     private final Comparator<StateType> progressComparator;
     private final WeakHashMap<StateType, Object> persistentStates = new WeakHashMap<>();

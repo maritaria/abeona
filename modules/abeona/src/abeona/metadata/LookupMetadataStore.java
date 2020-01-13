@@ -1,6 +1,5 @@
 package abeona.metadata;
 
-import abeona.State;
 import abeona.util.Arguments;
 
 import java.util.HashMap;
@@ -10,10 +9,10 @@ import java.util.WeakHashMap;
 
 /**
  * Implements a metadata store that uses {@link WeakHashMap} to associate metadata to states.
- * @apiNote The first call to {@link #set(State, Object, Object)} should be done with an interned state, otherwise the instance may drop off and the metadata will get lost dispite another one still existing.
+ * @apiNote The first call to {@link #set} should be done with an interned state, otherwise the instance may drop off and the metadata will get lost dispite another one still existing.
  * @param <StateType>
  */
-public final class LookupMetadataStore<StateType extends State> implements MetadataStore<StateType> {
+public final class LookupMetadataStore<StateType> implements MetadataStore<StateType> {
     private final Map<StateType, Map<Object, Object>> metadata = new WeakHashMap<>();
 
     @Override

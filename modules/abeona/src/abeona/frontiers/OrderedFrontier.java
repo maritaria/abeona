@@ -1,7 +1,5 @@
 package abeona.frontiers;
 
-import abeona.State;
-
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -13,7 +11,7 @@ import java.util.Optional;
  * For that case use the {@link DynamicallyOrderedFrontier} instead.
  * @param <StateType>
  */
-public interface OrderedFrontier<StateType extends State> extends ManagedFrontier<StateType> {
+public interface OrderedFrontier<StateType> extends ManagedFrontier<StateType> {
     /**
      * Gets the comparator used to sort this frontier.
      * Implementations should not return null.

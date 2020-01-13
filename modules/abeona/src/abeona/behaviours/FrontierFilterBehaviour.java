@@ -1,7 +1,6 @@
 package abeona.behaviours;
 
 import abeona.Query;
-import abeona.State;
 import abeona.TransitionEvaluationEvent;
 import abeona.util.Arguments;
 
@@ -11,7 +10,7 @@ import java.util.function.Predicate;
  * Modifies a query to prevent certain states from ending up in the frontier (being discovered).
  * @param <StateType>
  */
-public class FrontierFilterBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
+public class FrontierFilterBehaviour<StateType> extends AbstractBehaviour<StateType> {
     private final Predicate<StateType> filter;
 
     /**

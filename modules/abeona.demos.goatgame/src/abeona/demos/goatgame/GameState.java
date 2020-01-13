@@ -1,12 +1,10 @@
 package abeona.demos.goatgame;
 
-import abeona.State;
-
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-class GameState implements State {
+class GameState {
     boolean boatIsLeft, seedsIsLeft, goatIsLeft, wolfIsLeft;
 
     GameState() {

@@ -1,7 +1,6 @@
 package abeona.behaviours;
 
 import abeona.Query;
-import abeona.State;
 import abeona.StateEvaluationEvent;
 import abeona.util.Arguments;
 
@@ -13,7 +12,7 @@ import java.util.WeakHashMap;
  * This behaviour keeps count of how many states get evaluated by a query.
  * @param <StateType>
  */
-public final class IterationCounter<StateType extends State> extends AbstractBehaviour<StateType> {
+public final class IterationCounter<StateType> extends AbstractBehaviour<StateType> {
     private Map<Query<StateType>, Integer> counters = new WeakHashMap<>(1);
 
     /**

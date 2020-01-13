@@ -7,7 +7,7 @@ import abeona.util.Arguments;
  * Events fired from/by a Query instance usually are subclassed from this class
  * @param <StateType> The type of state in the statespace
  */
-public class ExplorationEvent<StateType extends State> {
+public class ExplorationEvent<StateType> {
     private final Query<StateType> query;
 
     /**

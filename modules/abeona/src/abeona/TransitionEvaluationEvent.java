@@ -8,7 +8,7 @@ import java.util.function.Predicate;
  * The event fired when transitions are being evaluated.
  * @param <StateType>
  */
-public final class TransitionEvaluationEvent<StateType extends State> extends ExplorationEvent<StateType> {
+public final class TransitionEvaluationEvent<StateType> extends ExplorationEvent<StateType> {
     private final Transition<StateType> transition;
     private boolean saveTargetState = true;
 

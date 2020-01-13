@@ -1,7 +1,5 @@
 package abeona.metadata;
 
-import abeona.State;
-
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -9,7 +7,7 @@ import java.util.function.Function;
  * Interface for a mechanism that stores arbitrary (meta)data on states.
  * @param <StateType>
  */
-public interface MetadataStore<StateType extends State> {
+public interface MetadataStore<StateType> {
     /**
      * Sets a metadata value on a state
      * @param state The state to set the value on

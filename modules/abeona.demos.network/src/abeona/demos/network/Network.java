@@ -1,6 +1,5 @@
 package abeona.demos.network;
 
-import abeona.State;
 import abeona.Transition;
 import abeona.util.Arguments;
 
@@ -29,7 +28,7 @@ public final class Network {
         return Optional.ofNullable(stations.get(name));
     }
 
-    public final class Station implements State {
+    public final class Station {
         private final String name;
 
         Station(String name) {

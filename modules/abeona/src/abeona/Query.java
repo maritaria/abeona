@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  *
  * @param <StateType> The type representing states in the state space.
  */
-public final class Query<StateType extends State> {
+public final class Query<StateType> {
     private final Frontier<StateType> frontier;
     private final Heap<StateType> heap;
     private final NextFunction<StateType> nextFunction;
@@ -315,7 +315,7 @@ public final class Query<StateType extends State> {
         }
     }
 
-    private static <StateType extends State> Predicate<StateType> defaultIsKnownPredicate(Frontier<StateType> frontier, Heap<StateType> heap) {
+    private static <StateType> Predicate<StateType> defaultIsKnownPredicate(Frontier<StateType> frontier, Heap<StateType> heap) {
         final Predicate<StateType> inHeap = heap::contains;
         if (frontier instanceof ManagedFrontier) {
             final ManagedFrontier<StateType> managedFrontier = (ManagedFrontier<StateType>) frontier;

@@ -1,7 +1,6 @@
 package abeona.behaviours;
 
 import abeona.Query;
-import abeona.State;
 import abeona.Transition;
 import abeona.TransitionEvaluationEvent;
 import abeona.util.Arguments;
@@ -14,7 +13,7 @@ import java.util.*;
  * Initial states do not have a back-pointer to another state.
  * @param <StateType>
  */
-public class BacktraceBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
+public class BacktraceBehaviour<StateType> extends AbstractBehaviour<StateType> {
     private final WeakHashMap<StateType, StateType> traceLinks = new WeakHashMap<>();
     private int mutationCounter = 0;
 

@@ -9,7 +9,7 @@ import java.util.Optional;
  * It includes the type of termination ({@link TerminationType}) under which the exploration was stopped.
  * @param <StateType> The type of state in the statespace
  */
-public class ExplorationTerminationEvent<StateType extends State> extends ExplorationEvent<StateType> {
+public class ExplorationTerminationEvent<StateType> extends ExplorationEvent<StateType> {
     private final TerminationType terminationType;
     private final Throwable terminationError;
 

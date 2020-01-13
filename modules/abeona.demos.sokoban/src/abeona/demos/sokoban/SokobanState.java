@@ -1,12 +1,10 @@
 package abeona.demos.sokoban;
 
-import abeona.State;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Set;
 
-public final class SokobanState implements State {
+public final class SokobanState {
     private final SokobanLevel level;
     private final Position player;
     private final Set<Position> boxes;

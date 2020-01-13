@@ -1,6 +1,5 @@
 package abeona.frontiers;
 
-import abeona.State;
 import abeona.util.Arguments;
 
 import java.util.Optional;
@@ -19,7 +18,7 @@ import java.util.stream.StreamSupport;
  *
  * @param <StateType>
  */
-public interface ManagedFrontier<StateType extends State> extends Frontier<StateType>, Iterable<StateType> {
+public interface ManagedFrontier<StateType> extends Frontier<StateType>, Iterable<StateType> {
     /**
      * Adds a single state to the frontier
      * @param state The state to add to the frontier

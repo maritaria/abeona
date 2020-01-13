@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @param <StateType>
  */
-public final class Transition<StateType extends State> {
+public final class Transition<StateType> {
     private final StateType source, target;
     private final Object userdata;
 

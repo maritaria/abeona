@@ -1,6 +1,5 @@
 package abeona.heaps;
 
-import abeona.State;
 import abeona.util.Arguments;
 
 import java.util.Iterator;
@@ -11,7 +10,7 @@ import java.util.Iterator;
  *
  * @param <StateType>
  */
-public interface ManagedHeap<StateType extends State> extends Heap<StateType>, Iterable<StateType> {
+public interface ManagedHeap<StateType> extends Heap<StateType>, Iterable<StateType> {
     /**
      * Removes a particular state from the heap (if the heap contains it).
      *

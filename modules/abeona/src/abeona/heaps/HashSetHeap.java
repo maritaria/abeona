@@ -1,7 +1,5 @@
 package abeona.heaps;
 
-import abeona.State;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -13,7 +11,7 @@ import java.util.Set;
  *
  * @param <StateType>
  */
-public class HashSetHeap<StateType extends State> implements ManagedHeap<StateType> {
+public class HashSetHeap<StateType> implements ManagedHeap<StateType> {
     // TODO: Create two implementations, one with a wrapper and one without
     private final Set<StateType> states = new HashSet<>();
 

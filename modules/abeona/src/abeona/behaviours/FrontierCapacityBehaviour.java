@@ -1,7 +1,6 @@
 package abeona.behaviours;
 
 import abeona.Query;
-import abeona.State;
 import abeona.frontiers.Frontier;
 import abeona.frontiers.GeneratorFrontier;
 import abeona.frontiers.ManagedFrontier;
@@ -16,7 +15,7 @@ import java.util.stream.Stream;
  * If the query uses a {@link OrderedFrontier} then the behaviour keeps the best state automatically.
  * @param <StateType>
  */
-public class FrontierCapacityBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
+public class FrontierCapacityBehaviour<StateType> extends AbstractBehaviour<StateType> {
     private final long maximumFrontierSize;
 
     /**

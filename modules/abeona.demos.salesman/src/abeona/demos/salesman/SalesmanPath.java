@@ -1,7 +1,5 @@
 package abeona.demos.salesman;
 
-import abeona.State;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class SalesmanPath implements State {
+public class SalesmanPath {
     private static final Random annealingRandom = new Random(1);
     private final Collection<City> order;
     private final double scale;

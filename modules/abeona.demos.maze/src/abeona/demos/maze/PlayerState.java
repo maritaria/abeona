@@ -1,6 +1,5 @@
 package abeona.demos.maze;
 
-import abeona.State;
 import abeona.Transition;
 import abeona.util.Arguments;
 
@@ -8,7 +7,7 @@ import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class PlayerState implements State {
+public class PlayerState {
     private final Maze.Cell location;
 
     public PlayerState(Maze.Cell location) {

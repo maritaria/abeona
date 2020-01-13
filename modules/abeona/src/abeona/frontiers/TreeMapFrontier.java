@@ -1,12 +1,10 @@
 package abeona.frontiers;
 
-import abeona.State;
-
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
 
-public class TreeMapFrontier<StateType extends State> implements DynamicallyOrderedFrontier<StateType> {
+public class TreeMapFrontier<StateType> implements DynamicallyOrderedFrontier<StateType> {
     private NavigableSet<StateType> tree;
     private Comparator<StateType> comparator;
 
@@ -17,11 +15,11 @@ public class TreeMapFrontier<StateType extends State> implements DynamicallyOrde
         this.tree = new TreeSet<>(comparator);
     }
 
-    public static <StateType extends State> TreeMapFrontier<StateType> withExactOrdering(Comparator<StateType> comparator) {
+    public static <StateType> TreeMapFrontier<StateType> withExactOrdering(Comparator<StateType> comparator) {
         return new TreeMapFrontier<>(comparator);
     }
 
-    public static <StateType extends State> TreeMapFrontier<StateType> withCollisions(Comparator<StateType> sortComparer, ToIntFunction<StateType> equalityHasher) {
+    public static <StateType> TreeMapFrontier<StateType> withCollisions(Comparator<StateType> sortComparer, ToIntFunction<StateType> equalityHasher) {
         return withExactOrdering(sortComparer.thenComparingInt(equalityHasher));
     }
 

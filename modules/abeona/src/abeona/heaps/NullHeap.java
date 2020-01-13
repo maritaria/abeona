@@ -1,7 +1,5 @@
 package abeona.heaps;
 
-import abeona.State;
-
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Spliterator;
@@ -14,7 +12,7 @@ import java.util.function.Consumer;
  * All instances of this class are considered equal and produce the same hashcode.
  * @param <StateType>
  */
-public final class NullHeap<StateType extends State> implements ManagedHeap<StateType> {
+public final class NullHeap<StateType> implements ManagedHeap<StateType> {
     @Override
     public boolean add(StateType state) {
         return false;

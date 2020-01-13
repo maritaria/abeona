@@ -2,7 +2,6 @@ package abeona.behaviours;
 
 import abeona.frontiers.DynamicallyOrderedFrontier;
 import abeona.Query;
-import abeona.State;
 import abeona.Transition;
 import abeona.util.Arguments;
 
@@ -15,7 +14,7 @@ import java.util.function.ToDoubleFunction;
  * Requires the query to use a {@link DynamicallyOrderedFrontier} based frontier to allow for re-sorting on update.
  * @param <StateType>
  */
-public class TraceCostFrontierBehaviour<StateType extends State> extends TraceCostBehaviour<StateType> {
+public class TraceCostFrontierBehaviour<StateType> extends TraceCostBehaviour<StateType> {
     public TraceCostFrontierBehaviour(ToDoubleFunction<Transition<StateType>> transitionCosts) {
         super(transitionCosts);
     }

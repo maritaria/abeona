@@ -1,7 +1,5 @@
 package abeona.frontiers;
 
-import abeona.State;
-
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.function.Consumer;
@@ -12,7 +10,7 @@ import java.util.stream.Stream;
  * The frontier must be constructed through either: {@link #fifoFrontier()} or {@link #lifoFrontier()} to create a fifo or lifo ordered frontier (respectively)
  * @param <StateType>
  */
-public final class QueueFrontier<StateType extends State> implements ManagedFrontier<StateType> {
+public final class QueueFrontier<StateType> implements ManagedFrontier<StateType> {
     private final ArrayDeque<StateType> queue = new ArrayDeque<>();
     private final Consumer<StateType> addOperation;
 
@@ -60,7 +58,7 @@ public final class QueueFrontier<StateType extends State> implements ManagedFron
      * @param <StateType>
      * @return
      */
-    public static <StateType extends State> QueueFrontier<StateType> fifoFrontier() {
+    public static <StateType> QueueFrontier<StateType> fifoFrontier() {
         return new QueueFrontier<>(false);
     }
 
@@ -69,7 +67,7 @@ public final class QueueFrontier<StateType extends State> implements ManagedFron
      * @param <StateType>
      * @return
      */
-    public static <StateType extends State> QueueFrontier<StateType> lifoFrontier() {
+    public static <StateType> QueueFrontier<StateType> lifoFrontier() {
         return new QueueFrontier<>(true);
     }
 }

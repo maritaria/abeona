@@ -1,7 +1,5 @@
 package abeona.heaps;
 
-import abeona.State;
-
 /**
  * An interface to the most basic functionality of a heap.
  * States can be added, checked for presence and the entire heap can be cleared.
@@ -9,7 +7,7 @@ import abeona.State;
  * A heap is a set-like collection mechanism, it can contain any given state at most once.
  * @param <StateType>
  */
-public interface Heap<StateType extends State> {
+public interface Heap<StateType> {
     /**
      * Puts the state in the heap if it was not yet already.
      * @param state The state to add to the heap set, not allowed to be null.

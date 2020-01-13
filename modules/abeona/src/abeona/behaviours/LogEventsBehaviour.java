@@ -11,7 +11,7 @@ import java.util.stream.Stream;
  * Utility behaviour that prints to console when event taps fire in a query instance.
  * @param <StateType>
  */
-public final class LogEventsBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
+public final class LogEventsBehaviour<StateType> extends AbstractBehaviour<StateType> {
     @Override
     public void attach(Query<StateType> query) {
         // TODO: Fix the need of exact query state typing (optional here but difficult to remove)

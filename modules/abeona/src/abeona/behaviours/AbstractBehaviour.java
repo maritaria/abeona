@@ -2,7 +2,6 @@ package abeona.behaviours;
 
 import abeona.aspects.Tap;
 import abeona.Query;
-import abeona.State;
 import abeona.util.Arguments;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.stream.Stream;
  * Abstract implementation of a behaviour that contains a mechanism to automatically detach events that get attached.
  * @param <StateType>
  */
-public abstract class AbstractBehaviour<StateType extends State> implements ExplorationBehaviour<StateType> {
+public abstract class AbstractBehaviour<StateType> implements ExplorationBehaviour<StateType> {
     private final WeakHashMap<Query<StateType>, List<BoundTapHandler<?>>> registrations = new WeakHashMap<>();
     private final List<BoundTapHandler<?>> globalRegistrations = new ArrayList<>();
 

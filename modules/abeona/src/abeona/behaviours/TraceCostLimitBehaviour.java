@@ -1,7 +1,6 @@
 package abeona.behaviours;
 
 import abeona.Query;
-import abeona.State;
 import abeona.TransitionEvaluationEvent;
 import abeona.util.Arguments;
 
@@ -10,7 +9,7 @@ import abeona.util.Arguments;
  * Requires a {@link TraceCostBehaviour} to define the cost measure.
  * @param <StateType>
  */
-public class TraceCostLimitBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
+public class TraceCostLimitBehaviour<StateType> extends AbstractBehaviour<StateType> {
     private final TraceCostBehaviour<StateType> traceCostBehaviour;
     private double maximumCost;
 

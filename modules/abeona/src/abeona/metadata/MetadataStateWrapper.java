@@ -1,6 +1,5 @@
 package abeona.metadata;
 
-import abeona.State;
 import abeona.util.Arguments;
 
 import java.util.HashMap;
@@ -12,7 +11,7 @@ import java.util.Map;
  * @param <StateType> The inner state type to wrap around
  * @apiNote Beware: This hides other feature-interfaces of the wrapped class.
  */
-public final class MetadataStateWrapper<StateType extends State> implements MetadataState {
+public final class MetadataStateWrapper<StateType> implements MetadataState {
     private final StateType state;
     private final Map<Object, Object> metadata = new HashMap<>();
 

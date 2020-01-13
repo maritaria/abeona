@@ -2,7 +2,6 @@ package abeona.util;
 
 import abeona.Query;
 import abeona.NextFunction;
-import abeona.State;
 import abeona.Transition;
 import abeona.behaviours.SweepLineBehaviour;
 import abeona.behaviours.TraceCostBehaviour;
@@ -17,11 +16,11 @@ import java.util.Objects;
 import java.util.function.ToDoubleFunction;
 
 public final class ExplorationPresets {
-    public static <StateType extends State> Query<StateType> setupBfs(NextFunction<StateType> neighbours) {
+    public static <StateType> Query<StateType> setupBfs(NextFunction<StateType> neighbours) {
         return new Query<>(QueueFrontier.fifoFrontier(), new HashSetHeap<>(), neighbours);
     }
 
-    public static <StateType extends State> Query<StateType> setupBfsMaxDepth(
+    public static <StateType> Query<StateType> setupBfsMaxDepth(
             NextFunction<StateType> neighbours,
             int maxDepth
     ) {
@@ -33,11 +32,11 @@ public final class ExplorationPresets {
         return query;
     }
 
-    public static <StateType extends State> Query<StateType> setupDfs(NextFunction<StateType> neighbours) {
+    public static <StateType> Query<StateType> setupDfs(NextFunction<StateType> neighbours) {
         return new Query<>(QueueFrontier.lifoFrontier(), new HashSetHeap<>(), neighbours);
     }
 
-    public static <StateType extends State> Query<StateType> setupDfsMaxDepth(
+    public static <StateType> Query<StateType> setupDfsMaxDepth(
             NextFunction<StateType> neighbours,
             int maxDepth
     ) {
@@ -49,14 +48,14 @@ public final class ExplorationPresets {
         return query;
     }
 
-    public static <StateType extends State> Query<StateType> setupDijkstra(
+    public static <StateType> Query<StateType> setupDijkstra(
             NextFunction<StateType> neighbours,
             ToDoubleFunction<Transition<StateType>> costs
     ) {
         return setupAStar(neighbours, costs, s -> 0);
     }
 
-    public static <StateType extends State> Query<StateType> setupAStar(
+    public static <StateType> Query<StateType> setupAStar(
             NextFunction<StateType> neighbours,
             ToDoubleFunction<Transition<StateType>> costs,
             ToDoubleFunction<StateType> remainingCostHeuristic
@@ -70,7 +69,7 @@ public final class ExplorationPresets {
         return query;
     }
 
-    public static <StateType extends State> Query<StateType> setupSweepLine(
+    public static <StateType> Query<StateType> setupSweepLine(
             NextFunction<StateType> neighbours,
             Comparator<StateType> progressMeasure
     ) {

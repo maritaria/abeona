@@ -1,7 +1,6 @@
 package abeona.behaviours;
 
 import abeona.Query;
-import abeona.State;
 import abeona.TransitionEvaluationEvent;
 import abeona.aspects.EventTap;
 import abeona.util.Arguments;
@@ -15,7 +14,7 @@ import java.util.function.Predicate;
  * Additionally the behaviour exposes a {@link #onGoal} tappable event for handling the discovery of goal states.
  * @param <StateType>
  */
-public final class TerminateOnGoalStateBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
+public final class TerminateOnGoalStateBehaviour<StateType> extends AbstractBehaviour<StateType> {
     private final Predicate<StateType> isGoal;
     /**
      * Tappable event, fires when a state is discovered that matches the goal state predicate.

@@ -1,13 +1,11 @@
 package abeona.demo.common;
 
-import abeona.State;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.function.Function;
 
-public class StateListView<StateType extends State> extends JPanel {
+public class StateListView<StateType> extends JPanel {
     private final JPanel stack = new JPanel();
     private final JScrollPane scroll;
     private final Function<StateType, JPanel> viewCreator;

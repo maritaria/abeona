@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  * This behaviour modifies the {@link Query#isKnown} interceptor
  * @param <StateType>
  */
-public final class IsKnownOptimization<StateType extends State> extends AbstractBehaviour<StateType> {
+public final class IsKnownOptimization<StateType> extends AbstractBehaviour<StateType> {
     private static final Object IS_KNOWN_FLAG = new Object();
 
     /**

@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  * You can access the state being evaluated as well as mutate the stream of outgoing transitions that are being evaluated.
  * @param <StateType>
  */
-public final class StateEvaluationEvent<StateType extends State> extends ExplorationEvent<StateType> {
+public final class StateEvaluationEvent<StateType> extends ExplorationEvent<StateType> {
     private final StateType state;
     private Stream<TransitionEvaluationEvent<StateType>> transitionEvaluations;
 

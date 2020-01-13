@@ -1,7 +1,6 @@
 package abeona.behaviours;
 
 import abeona.Query;
-import abeona.State;
 import abeona.aspects.BiFunctionTap;
 import abeona.frontiers.Frontier;
 import abeona.util.Arguments;
@@ -26,7 +25,7 @@ import java.util.stream.Stream;
  *
  * @param <StateType>
  */
-public class SimulatedAnnealingBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
+public class SimulatedAnnealingBehaviour<StateType> extends AbstractBehaviour<StateType> {
     private final double startingTemperature;
     private final double settleSpeed;
     private final long randomSeed;

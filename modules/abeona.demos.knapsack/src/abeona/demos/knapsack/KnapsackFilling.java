@@ -1,6 +1,5 @@
 package abeona.demos.knapsack;
 
-import abeona.State;
 import abeona.util.Arguments;
 
 import java.util.ArrayList;
@@ -8,7 +7,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class KnapsackFilling implements State {
+public final class KnapsackFilling {
     private final KnapsackPuzzle puzzle;
     private Collection<Item> items;
 

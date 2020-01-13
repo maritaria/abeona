@@ -6,7 +6,7 @@ import abeona.util.Arguments;
  * Base eventdata class for {@link ExplorationEvent} based events that are related to a particular state as well
  * @param <StateType>
  */
-public class StateEvent<StateType extends State> extends ExplorationEvent<StateType> {
+public class StateEvent<StateType> extends ExplorationEvent<StateType> {
     private final StateType state;
 
     /**

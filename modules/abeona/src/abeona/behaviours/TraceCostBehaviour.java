@@ -12,7 +12,7 @@ import java.util.function.ToDoubleFunction;
  * This behaviour automatically updates the cost of a state when a cheaper path is found, but this update does not propagate to neighbours.
  * @param <StateType>
  */
-public class TraceCostBehaviour<StateType extends State> extends AbstractBehaviour<StateType> {
+public class TraceCostBehaviour<StateType> extends AbstractBehaviour<StateType> {
     private final ToDoubleFunction<Transition<StateType>> transitionCosts;
     private final Map<StateType, Double> costMetadata = new WeakHashMap<>();
     /**
