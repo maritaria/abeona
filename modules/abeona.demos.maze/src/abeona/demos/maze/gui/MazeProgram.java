@@ -3,15 +3,16 @@ package abeona.demos.maze.gui;
 import abeona.NextFunction;
 import abeona.Query;
 import abeona.behaviours.LogEventsBehaviour;
+import abeona.behaviours.TerminateOnGoalStateBehaviour;
 import abeona.demos.maze.Maze;
-import abeona.demos.maze.MazeGenerator;
 import abeona.demos.maze.PlayerState;
+import abeona.demos.maze.Position;
 import abeona.frontiers.Frontier;
-import abeona.frontiers.QueueFrontier;
+import abeona.frontiers.TreeMapFrontier;
 import abeona.heaps.HashSetHeap;
 import abeona.heaps.Heap;
 
-import java.util.Random;
+import java.util.Comparator;
 
 public final class MazeProgram {
     // Maze size
@@ -32,7 +33,10 @@ public final class MazeProgram {
 
     static Query<PlayerState> createQuery(Maze maze) {
         // Pick the frontier to use
-        final Frontier<PlayerState> frontier = QueueFrontier.fifoFrontier();
+
+        final Frontier<PlayerState> frontier = TreeMapFrontier.withCollisions(Comparator.comparingDouble(playerState1 -> {
+            return playerState1.getLocation().getPos().distance(new Position(END_X, END_Y));
+        }), PlayerState::hashCode);
 
         // Pick the heap to use
         final Heap<PlayerState> heap = new HashSetHeap<>();
@@ -45,7 +49,12 @@ public final class MazeProgram {
 
         // You can add behaviours here
         query.addBehaviour(new LogEventsBehaviour<>());
+        query.addBehaviour(new TerminateOnGoalStateBehaviour<>(playerState -> {
+            final var pos = playerState.getLocation().getPos();
+            return pos.getX() == END_X && pos.getY() == END_Y;
+        }));
 
         return query;
     }
+
 }
