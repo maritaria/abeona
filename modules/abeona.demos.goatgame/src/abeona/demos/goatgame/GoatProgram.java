@@ -3,6 +3,7 @@ package abeona.demos.goatgame;
 import abeona.NextFunction;
 import abeona.Query;
 import abeona.behaviours.LogEventsBehaviour;
+import abeona.behaviours.TerminateOnGoalStateBehaviour;
 import abeona.frontiers.Frontier;
 import abeona.frontiers.QueueFrontier;
 import abeona.heaps.HashSetHeap;
@@ -30,6 +31,7 @@ public class GoatProgram {
 
         // You can add behaviours here
         query.addBehaviour(new LogEventsBehaviour<>());
+        query.addBehaviour(new TerminateOnGoalStateBehaviour<>(GameState::isGoal));
 
         return query;
     }
