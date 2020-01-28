@@ -2,14 +2,17 @@ package abeona.demos.sokoban.gui;
 
 import abeona.NextFunction;
 import abeona.Query;
+import abeona.behaviours.SweepLineBehaviour;
 import abeona.behaviours.TerminateOnGoalStateBehaviour;
 import abeona.demos.sokoban.PlayerMoveActions;
 import abeona.demos.sokoban.SokobanState;
 import abeona.demos.sokoban.gui.levels.LevelReader;
 import abeona.frontiers.QueueFrontier;
+import abeona.frontiers.TreeMapFrontier;
 import abeona.heaps.HashSetHeap;
 
 import javax.swing.*;
+import java.util.Comparator;
 
 public class SokobanProgram {
     public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
@@ -21,7 +24,10 @@ public class SokobanProgram {
 
     static Query<SokobanState> createQuery(SokobanState initialState) {
         // Frontier
-        final var frontier = QueueFrontier.<SokobanState>fifoFrontier();
+        final var frontier = TreeMapFrontier.<SokobanState>withCollisions(
+                Comparator.comparing(s -> s.getBoxes().stream().filter(b -> s.getLevel().isButton(b)).count()),
+                s -> s.hashCode()
+        );
 
         // Heap
         final var heap = new HashSetHeap<SokobanState>();
@@ -34,6 +40,7 @@ public class SokobanProgram {
 
         // Add behaviours
         query.addBehaviour(new TerminateOnGoalStateBehaviour<>(SokobanState::isSolved));
+        //query.addBehaviour(new SweepLineBehaviour<>(Comparator.comparing(s -> s.getBoxes().stream().filter(b -> s.getLevel().isButton(b)).count())));
 
         return query;
     }
