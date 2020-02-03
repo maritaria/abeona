@@ -2,7 +2,9 @@ package abeona.demos.sokoban.gui;
 
 import abeona.NextFunction;
 import abeona.Query;
+import abeona.behaviours.SweepLineBehaviour;
 import abeona.behaviours.TerminateOnGoalStateBehaviour;
+import abeona.demos.sokoban.Helpers;
 import abeona.demos.sokoban.PlayerMoveActions;
 import abeona.demos.sokoban.SokobanState;
 import abeona.demos.sokoban.gui.levels.LevelReader;
@@ -34,6 +36,7 @@ public class SokobanProgram {
 
         // Add behaviours
         query.addBehaviour(new TerminateOnGoalStateBehaviour<>(SokobanState::isSolved));
+        query.addBehaviour(new SweepLineBehaviour<>(Helpers.progressComparatorWithoutCollisions(initialState)));
 
         return query;
     }
