@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.knapsack/abeona.demos.knapsack.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.knapsack/abeona.demos.knapsack.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.maze/abeona.demos.maze.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.maze/abeona.demos.maze.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.network/abeona.demos.network.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.network/abeona.demos.network.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.pddl/abeona.demos.pddl.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.pddl/abeona.demos.pddl.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.salesman/abeona.demos.salesman.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.salesman/abeona.demos.salesman.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.sokoban/abeona.demos.sokoban.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.sokoban/abeona.demos.sokoban.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/abeona.demos.staircase/abeona.demos.staircase.iml" filepath="$PROJECT_DIR$/modules/abeona.demos.staircase/abeona.demos.staircase.iml" />
