@@ -2,7 +2,6 @@ package abeona.demos.pddl;
 
 import abeona.NextFunction;
 import abeona.Query;
-import abeona.Transition;
 import abeona.behaviours.BacktraceBehaviour;
 import abeona.behaviours.TerminateOnGoalStateBehaviour;
 import abeona.frontiers.Frontier;
@@ -10,9 +9,7 @@ import abeona.frontiers.QueueFrontier;
 import abeona.heaps.HashSetHeap;
 import abeona.heaps.Heap;
 import fr.uga.pddl4j.encoding.CodedProblem;
-import fr.uga.pddl4j.util.BitOp;
 import fr.uga.pddl4j.util.BitState;
-import fr.uga.pddl4j.util.CondBitExp;
 
 import java.util.stream.Stream;
 

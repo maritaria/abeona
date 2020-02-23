@@ -63,7 +63,7 @@ public class Simulator extends JFrame {
         buttonsPanel.add(fastStepButton);
         // Button: step x100
         final var megaStepButton = new JButton("100 steps");
-        megaStepButton.addActionListener(event -> this.nextStep(100));
+        megaStepButton.addActionListener(event -> this.nextStep(10000));
         buttonsPanel.add(megaStepButton);
         // Button: Reset temp
         final var resetTemperatureButton = new JButton("Reset temperature");

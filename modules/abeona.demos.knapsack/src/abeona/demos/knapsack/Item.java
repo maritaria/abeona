@@ -18,7 +18,7 @@ public final class Item {
 
     @Override
     public int hashCode() {
-        return value ^ (weight >>> 4);
+        return 0x44 ^ value ^ (weight << 2);
     }
 
     @Override
