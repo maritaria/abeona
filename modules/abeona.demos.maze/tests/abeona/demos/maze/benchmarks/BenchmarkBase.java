@@ -9,14 +9,14 @@ import java.util.Random;
 @State(Scope.Benchmark)
 public class BenchmarkBase {
     public static int SEED = 1;
-    public static int WIDTH = 200;
-    public static int HEIGHT = 200;
+    public static int WIDTH = 512;
+    public static int HEIGHT = 512;
     public static int START_X = WIDTH / 2;
     public static int START_Y = 0;
     public static int END_X = WIDTH - START_X;
     public static int END_Y = HEIGHT - 1;
 
-    @Param({"8", "16", "32", "64", "128", "256", "512", "1024"})
+    @Param({"8", "16", "32", "64", "128", "256", "512"})
     public int mazeSize;
     public Maze maze;
 

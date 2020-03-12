@@ -43,7 +43,7 @@ public final class AbeonaUsingPddl {
         query.explore();
     }
 
-    private static Query<BitState> createAbeonaQuery(CodedProblem problem) {
+    public static Query<BitState> createAbeonaQuery(CodedProblem problem) {
         final Frontier<BitState> frontier = QueueFrontier.fifoFrontier();
         frontier.add(Stream.of(createInitialState(problem)));
         final Heap<BitState> heap = new HashSetHeap<>();

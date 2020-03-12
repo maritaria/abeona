@@ -94,5 +94,6 @@ public abstract class DemoBase extends BenchmarkBase {
     public void prepareBenchmarkRun() {
         super.prepareBenchmarkRun();
         benchmarkQuery = prepareQuery(maze);
+        benchmarkQuery.addBehaviour(new TerminateOnGoalStateBehaviour<>(this::isGoal));
     }
 }

@@ -20,17 +20,20 @@ public class PlayerState {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof PlayerState) {
-            final var other = (PlayerState) obj;
-            return location == other.location;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
-        return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PlayerState that = (PlayerState) o;
+        return location.equals(that.location);
     }
 
     @Override
     public int hashCode() {
-        return location.getPos().hashCode();
+        return Objects.hash(location);
     }
 
     @Override

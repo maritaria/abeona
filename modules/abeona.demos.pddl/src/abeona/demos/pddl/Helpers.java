@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 
 public final class Helpers {
 
-    static CodedProblem loadProblem(String domainFile, String problemFile) {
+    public static CodedProblem loadProblem(String domainFile, String problemFile) {
         // Load up the factory
         final ProblemFactory factory = ProblemFactory.getInstance();
         ErrorManager errorManager = null;
@@ -42,12 +42,12 @@ public final class Helpers {
         return encoded;
     }
 
-    static BitState createInitialState(CodedProblem problem) {
+    public static BitState createInitialState(CodedProblem problem) {
         return new BitState(problem.getInit());
     }
 
 
-    static NextFunction<BitState> createNextFunction(CodedProblem problem) {
+    public static NextFunction<BitState> createNextFunction(CodedProblem problem) {
         return state -> problem.getOperators()
                 .stream()
                 .filter(op -> op.isApplicable(state))
@@ -64,7 +64,7 @@ public final class Helpers {
         return new Transition<>(state, next, op);
     }
 
-    static Predicate<BitState> createGoalPredicate(CodedProblem problem) {
+    public static Predicate<BitState> createGoalPredicate(CodedProblem problem) {
         return state -> state.satisfy(problem.getGoal());
     }
 }
