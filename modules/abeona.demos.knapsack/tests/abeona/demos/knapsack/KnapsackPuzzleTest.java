@@ -12,7 +12,10 @@ import abeona.heaps.Heap;
 import abeona.heaps.ManagedHeap;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Stream;
 
 class KnapsackPuzzleTest {
@@ -47,9 +50,10 @@ class KnapsackPuzzleTest {
 
     @Test
     void solveWithSweepLine() {
-        final Comparator<KnapsackFilling> progressComparator = Comparator.comparingLong(filling -> filling.getItems().count());
-        final Comparator<KnapsackFilling> frontierComparator = progressComparator.thenComparingInt(KnapsackFilling::totalValue)
-                .thenComparingInt(KnapsackFilling::totalWeight);
+        final Comparator<KnapsackFilling> progressComparator = Comparator
+                .comparingLong(filling -> filling.getItems().count());
+        final Comparator<KnapsackFilling> frontierComparator = progressComparator
+                .thenComparingInt(KnapsackFilling::totalValue).thenComparingInt(KnapsackFilling::totalWeight);
         final Frontier<KnapsackFilling> frontier = TreeMapFrontier.withExactOrdering(frontierComparator);
         final Heap<KnapsackFilling> heap = new HashSetHeap<>();
         final NextFunction<KnapsackFilling> next = NextFunction.wrap(KnapsackFilling::next);
@@ -58,10 +62,27 @@ class KnapsackPuzzleTest {
         solveWithQuery(query);
     }
 
+    @Test
+    void solveWithoutSweepLine() {
+        final Comparator<KnapsackFilling> progressComparator = Comparator
+                .comparingLong(filling -> filling.getItems().count());
+        final Comparator<KnapsackFilling> frontierComparator = progressComparator
+                .thenComparingInt(KnapsackFilling::totalValue).thenComparingInt(KnapsackFilling::totalWeight);
+        final Frontier<KnapsackFilling> frontier = TreeMapFrontier.withExactOrdering(frontierComparator);
+        final Heap<KnapsackFilling> heap = new HashSetHeap<>();
+        final NextFunction<KnapsackFilling> next = NextFunction.wrap(KnapsackFilling::next);
+        final Query<KnapsackFilling> query = new Query<>(frontier, heap, next);
+        solveWithQuery(query);
+    }
+
     private void solveWithQuery(Query<KnapsackFilling> query) {
         // Setup puzzle
-        final var puzzle = new KnapsackPuzzle(5);
-        puzzle.availableItems.addAll(List.of(new Item(3, 1), new Item(12, 4), new Item(5, 2), new Item(8, 2)));
+        final var puzzle = new KnapsackPuzzle(50);
+        for (int i = 1; i <= 5; i++) {
+            for (int j = 1; j <= 5; j++) {
+                puzzle.availableItems.add(new Item(i, j));
+            }
+        }
         query.getFrontier().add(Stream.of(new KnapsackFilling(puzzle, Collections.emptySet())));
         // Setup answer collection
         final var answers = new HashSet<KnapsackFilling>();
@@ -73,7 +94,8 @@ class KnapsackPuzzleTest {
         final var frontier = (ManagedFrontier<KnapsackFilling>) query.getFrontier();
         final var heap = (ManagedHeap<KnapsackFilling>) query.getHeap();
         query.afterStateEvaluation.tap(event -> {
-            System.out.println(heap.size() + ", " + frontier.size());
+            System.out.println(heap.size());
+            // System.out.println(heap.size() + ", " + frontier.size());
             //            System.out.println("Heap: " + heap.size());
             //            heap.forEach(System.out::println);
             //            System.out.println("Frontier: " + frontier.size());
@@ -82,10 +104,10 @@ class KnapsackPuzzleTest {
         // Run exploration
         query.explore();
         // Print results
-        System.out.println("Top 5 solutions: ");
-        answers.stream().sorted(Comparator.comparingInt(KnapsackFilling::totalValue).reversed()).limit(5)
-                .forEach(System.out::println);
+        // System.out.println("Top 5 solutions: ");
+        // answers.stream().sorted(Comparator.comparingInt(KnapsackFilling::totalValue).reversed()).limit(5)
+        //         .forEach(System.out::println);
 
-        System.out.println("Heap size over time:");
+        // System.out.println("Heap size over time:");
     }
 }
