@@ -45,9 +45,9 @@ public class PathView extends JComponent {
         this.paintPath(g, previous, first);
         final var length = path.getLength();
         g.setColor(Color.black);
-        g.drawString("Length: " + length, 100, 50);
+        g.drawString("Length: " + length, 10, 10);
         if (annealing != null) {
-            g.drawString("Annealing: " + annealing, 100, 60);
+            //g.drawString("Annealing: " + annealing, 10, 25);
         }
     }
 

@@ -30,11 +30,14 @@ public final class KnapsackFilling {
     }
 
     public Stream<KnapsackFilling> next() {
-        return puzzle.availableItems.stream().filter(item -> !this.items.contains(item)).map(item -> {
-            final var extended = new ArrayList<>(items);
-            extended.add(item);
-            return new KnapsackFilling(puzzle, extended);
-        }).filter(filling -> filling.totalWeight() <= puzzle.capacity);
+        return puzzle.availableItems.stream()
+                .filter(item -> !this.items.contains(item))
+                .map(item -> {
+                    final var extended = new ArrayList<>(items);
+                    extended.add(item);
+                    return new KnapsackFilling(puzzle, extended);
+                })
+                .filter(filling -> filling.totalWeight() <= puzzle.capacity);
     }
 
     @Override
@@ -42,7 +45,6 @@ public final class KnapsackFilling {
         int hash = items.size();
         for (final var item : items) {
             hash ^= item.hashCode();
-            hash = hash >>> 1;
         }
         return hash;
     }
@@ -59,7 +61,7 @@ public final class KnapsackFilling {
 
     @Override
     public String toString() {
-        return "$" + totalValue() + " @ " + totalWeight() + "kg: [" + items.stream().map(Item::toString).collect(
-                Collectors.joining(", ")) + "]";
+        return "$" + totalValue() + " @ " + totalWeight() + "kg: [" + items.stream().map(Item::toString)
+                .collect(Collectors.joining(", ")) + "]";
     }
 }

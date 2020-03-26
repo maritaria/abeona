@@ -2,16 +2,17 @@ package abeona.demos.maze.gui;
 
 import abeona.NextFunction;
 import abeona.Query;
-import abeona.behaviours.LogEventsBehaviour;
+import abeona.behaviours.TerminateOnGoalStateBehaviour;
 import abeona.demos.maze.Maze;
-import abeona.demos.maze.MazeGenerator;
 import abeona.demos.maze.PlayerState;
+import abeona.demos.maze.Position;
 import abeona.frontiers.Frontier;
 import abeona.frontiers.QueueFrontier;
+import abeona.frontiers.TreeMapFrontier;
 import abeona.heaps.HashSetHeap;
 import abeona.heaps.Heap;
 
-import java.util.Random;
+import java.util.Comparator;
 
 public final class MazeProgram {
     // Maze size
@@ -30,22 +31,37 @@ public final class MazeProgram {
         simulator.setVisible(true);
     }
 
-    static Query<PlayerState> createQuery(Maze maze) {
-        // Pick the frontier to use
-        final Frontier<PlayerState> frontier = QueueFrontier.fifoFrontier();
+static Query<PlayerState> createQuery(Maze maze) {
+    final Frontier<PlayerState> frontier = QueueFrontier.fifoFrontier();
+    final Heap<PlayerState> heap = new HashSetHeap<>();
+    final NextFunction<PlayerState> next = PlayerState::next;
+    final Query<PlayerState> query = new Query<>(frontier, heap, next);
+    return query;
+}
 
-        // Pick the heap to use
+static Query<PlayerState> createQuery2(Maze maze) {
+    final Frontier<PlayerState> frontier = QueueFrontier.fifoFrontier();
+    final Heap<PlayerState> heap = new HashSetHeap<>();
+    final NextFunction<PlayerState> next = PlayerState::next;
+    final Query<PlayerState> query = new Query<>(frontier, heap, next);
+    query.addBehaviour(new TerminateOnGoalStateBehaviour<>(state -> {
+        final var pos = state.getLocation().getPos();
+        return pos.getX() == END_X && pos.getY() == END_Y;
+    }));
+    return query;
+}
+
+    static Query<PlayerState> createQuery3(Maze maze) {
+        final Frontier<PlayerState> frontier = TreeMapFrontier.withCollisions(
+                Comparator.comparingDouble(state -> state.getLocation().getPos().distance(new Position(END_X, END_Y))),
+                PlayerState::hashCode);
         final Heap<PlayerState> heap = new HashSetHeap<>();
-
-        // Pick the next-function
         final NextFunction<PlayerState> next = PlayerState::next;
-
-        // Build the query
         final Query<PlayerState> query = new Query<>(frontier, heap, next);
-
-        // You can add behaviours here
-        query.addBehaviour(new LogEventsBehaviour<>());
-
+        query.addBehaviour(new TerminateOnGoalStateBehaviour<>(state -> {
+            final var pos = state.getLocation().getPos();
+            return pos.getX() == END_X && pos.getY() == END_Y;
+        }));
         return query;
     }
 }

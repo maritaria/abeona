@@ -4,6 +4,7 @@ import abeona.Query;
 import abeona.frontiers.QueueFrontier;
 import abeona.heaps.HashSetHeap;
 
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class DemoBfs extends DemoBase {

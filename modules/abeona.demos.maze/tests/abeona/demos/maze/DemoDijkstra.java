@@ -18,7 +18,7 @@ public class DemoDijkstra extends DemoBase {
     Query<PlayerState> prepareQuery(Maze maze, Position start, Position end) {
         final var cost = new TraceCostFrontierBehaviour<PlayerState>(t -> 1);
         final var comp = Comparator
-                .<PlayerState>comparingDouble(state -> cost.getTraceCost(state).orElse(0))
+                .<PlayerState>comparingDouble(state -> cost.getTraceCost(state).orElse(0)).reversed()
                 .thenComparingInt(state -> state.getLocation().getPos().getX())
                 .thenComparingInt(state -> state.getLocation().getPos().getY());
         final var frontier = TreeMapFrontier.withExactOrdering(comp);
