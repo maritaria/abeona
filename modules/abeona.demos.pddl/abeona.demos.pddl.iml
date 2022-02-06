@@ -8,9 +8,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="com.github.pellierd:pddl4j:3.8.2" level="project" />
+    <orderEntry type="library" exported="" name="github.pellierd.pddl4j" level="project" />
     <orderEntry type="module" module-name="abeona" />
-    <orderEntry type="library" scope="TEST" name="org.openjdk.jmh:jmh-generator-annprocess:1.22" level="project" />
-    <orderEntry type="library" scope="TEST" name="org.openjdk.jmh:jmh-core:1.21" level="project" />
+    <orderEntry type="library" scope="TEST" name="openjdk.jmh.core" level="project" />
+    <orderEntry type="library" scope="TEST" name="openjdk.jmh.generator.annprocess" level="project" />
   </component>
 </module>
